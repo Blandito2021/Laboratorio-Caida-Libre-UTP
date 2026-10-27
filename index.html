@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratorio Virtual · Caída Libre · UTP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Share+Tech+Mono&display=swap">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script defer src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<style>
+/* ============================================================================
+   Laboratorio Virtual de Caída Libre — Universidad Tecnológica de Pereira
+   Paleta y tipografía institucionales heredadas del estándar UTP (Física I).
+   Autoría de contenido: Luis Hernando Blandón Dávila.
+   ========================================================================== */
+:root{
+  --bg:#e9edf1; --surface:#ffffff; --surface-2:#f3f6f8; --ink:#13202b; --muted:#566573; --line:#d0d8df;
+  --accent:#1d5d8c; --accent-soft:#dbe8f2; --accent-ink:#ffffff; --ball:#c7cdd4; --ball-hi:#eef1f4;
+  --ok:#2d7a4c; --ok-soft:#dcefe3; --warn:#9a6512; --warn-soft:#f7ebd3; --bad:#b0322b; --bad-soft:#f6dedc;
+  --scene:#f6f8fa; --scene-grid:#e3e8ed; --wood:#b98c5d; --wood-dark:#8a6440; --metal:#8e9aa5; --metal-dark:#5d6973;
+  --column:#4a5560; --lcd-bg:#bfcca6; --lcd-ink:#1b2614; --device:#2b3138; --device-2:#3a424b;
+  --grid-major:#c5ced6; --grid-minor:#e6ebef; --axis:#22303c; --mag:#b0322b;
+  --paper:#ffffff; --paper-ink:#111111; --paper-line:#9aa3ab;
+  --f-display:"Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",Roboto,Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --f-lcd:"Share Tech Mono","JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e141a; --surface:#151e27; --surface-2:#1b2631; --ink:#e3eaf0; --muted:#97a6b3; --line:#2a3946;
+  --accent:#62a9dc; --accent-soft:#1c3346; --accent-ink:#08131c; --ball:#aab3bd; --ball-hi:#dfe5ea;
+  --ok:#5cc08a; --ok-soft:#173326; --warn:#e2ac4f; --warn-soft:#3a2c13; --bad:#ef7a70; --bad-soft:#3d1c1a;
+  --scene:#111a22; --scene-grid:#1b2731; --wood:#7b5d3e; --wood-dark:#5a4329; --metal:#7e8b97; --metal-dark:#56626d;
+  --column:#38424d; --lcd-bg:#9fb08a; --lcd-ink:#121a0d; --device:#0b0f13; --device-2:#252d35;
+  --grid-major:#2f3e4b; --grid-minor:#1d2833; --axis:#c9d5df; --mag:#ef7a70; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e141a; --surface:#151e27; --surface-2:#1b2631; --ink:#e3eaf0; --muted:#97a6b3; --line:#2a3946;
+  --accent:#62a9dc; --accent-soft:#1c3346; --accent-ink:#08131c; --ball:#aab3bd; --ball-hi:#dfe5ea;
+  --ok:#5cc08a; --ok-soft:#173326; --warn:#e2ac4f; --warn-soft:#3a2c13; --bad:#ef7a70; --bad-soft:#3d1c1a;
+  --scene:#111a22; --scene-grid:#1b2731; --wood:#7b5d3e; --wood-dark:#5a4329; --metal:#7e8b97; --metal-dark:#56626d;
+  --column:#38424d; --lcd-bg:#9fb08a; --lcd-ink:#121a0d; --device:#0b0f13; --device-2:#252d35;
+  --grid-major:#2f3e4b; --grid-minor:#1d2833; --axis:#c9d5df; --mag:#ef7a70; color-scheme:dark;
+}
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+button{background:transparent;border:0;color:inherit;font:inherit;cursor:pointer;padding:0}
+html,body{background:var(--bg);color:var(--ink);overflow-x:hidden}
+body{font-family:var(--f-body);font-size:16px;line-height:1.5;margin:0;-webkit-text-size-adjust:100%}
+.grid2>*,.lab-grid>*,.console>*{min-width:0}
+.card,.tw-q,.msg,.formula{max-width:100%}
+#reportHost{overflow-x:auto}
+@media(max-width:560px){.paper{padding:16px 14px}.paper table{display:block;overflow-x:auto;white-space:nowrap}}
+h1,h2,h3,h4{font-weight:700;font-family:var(--f-display);letter-spacing:.01em;line-height:1.16;margin:0}
+.wrap{max-width:1380px;margin:0 auto;padding-inline:16px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--f-display);font-weight:600;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+svg.lucide{width:1.05em;height:1.05em;vertical-align:-.16em;stroke-width:2}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+
+/* Banda institucional + cabecera */
+.inst{background:var(--accent);color:var(--accent-ink);font-family:var(--f-display);font-weight:600;font-size:.82rem;letter-spacing:.04em}
+.inst .wrap{display:flex;gap:.6rem;align-items:center;justify-content:space-between;padding:.35rem 16px}
+.inst .sedes{opacity:.9;font-weight:500;font-size:.76rem}
+.topbar{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+.topbar .wrap{display:flex;gap:1rem;align-items:center;padding:.55rem 16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:.7rem}
+.brand .mark{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#0b3350));display:grid;place-items:center;color:#fff;box-shadow:0 5px 14px color-mix(in srgb,var(--accent) 40%,transparent);flex:none}
+.brand h1{font-size:1.12rem;line-height:1.05}
+.brand small{display:block;color:var(--muted);font-family:var(--f-body);font-weight:600;font-size:.74rem;letter-spacing:.02em}
+.topbar .spacer{margin-left:auto}
+.iconbtn{width:40px;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--surface);display:grid;place-items:center;transition:.15s}
+.iconbtn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+
+/* Pestañas */
+.tabs{display:flex;gap:.3rem;flex-wrap:wrap;padding:.5rem 0 0}
+.tab{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .8rem;border:1px solid transparent;border-bottom:0;border-radius:9px 9px 0 0;color:var(--muted);font-weight:600;font-size:.92rem}
+.tab:hover{color:var(--ink);background:var(--surface-2)}
+.tab[aria-selected="true"]{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
+.tab .n{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:color-mix(in srgb,var(--accent) 20%,transparent);font-size:.72rem;font-family:var(--f-mono)}
+.tabpane{background:var(--surface);border:1px solid var(--line);border-radius:0 12px 12px 12px;padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+@media(max-width:560px){.tab span.lbl{display:none}.tab{padding:.5rem .62rem}}
+
+/* Cajas de contenido */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card+.card{margin-top:14px}
+.grid2{display:grid;gap:14px}
+@media(min-width:900px){.grid2{grid-template-columns:1fr 1fr}}
+.panel-title{display:flex;align-items:center;gap:.5rem;font-family:var(--f-display);font-weight:700;font-size:1.08rem;margin-bottom:.5rem}
+.msg{display:flex;gap:.6rem;align-items:flex-start;border:1px solid var(--line);border-left-width:4px;border-radius:9px;padding:.6rem .8rem;margin:.6rem 0;font-size:.92rem;background:var(--surface-2)}
+.msg p{margin:0}
+.msg-info{border-left-color:var(--accent);background:color-mix(in srgb,var(--accent-soft) 60%,var(--surface))}
+.msg-ok{border-left-color:var(--ok);background:color-mix(in srgb,var(--ok-soft) 55%,var(--surface))}
+.msg-warn{border-left-color:var(--warn);background:color-mix(in srgb,var(--warn-soft) 55%,var(--surface))}
+.msg-bad{border-left-color:var(--bad);background:color-mix(in srgb,var(--bad-soft) 55%,var(--surface))}
+.formula{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:.2rem 1rem;margin:.7rem 0;overflow-x:auto}
+ul.goals{margin:.4rem 0;padding-left:1.1rem}
+ul.goals li{margin:.3rem 0}
+.kbd{font-family:var(--f-mono);font-size:.78rem;background:var(--surface-2);border:1px solid var(--line);border-radius:5px;padding:.05rem .4rem}
+.chiprow{display:flex;flex-wrap:wrap;gap:.5rem;margin:.5rem 0}
+.chip{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .65rem;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);font-size:.82rem;font-weight:600}
+.chip-ok{border-color:color-mix(in srgb,var(--ok) 45%,var(--line));color:var(--ok);background:var(--ok-soft)}
+.chip-warn{border-color:color-mix(in srgb,var(--warn) 45%,var(--line));color:var(--warn);background:var(--warn-soft)}
+
+/* Botones */
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem .85rem;border:1px solid var(--line);border-radius:9px;background:var(--surface);font-weight:600;font-size:.9rem;transition:.14s;white-space:nowrap}
+.btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:.34rem .6rem;font-size:.82rem}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover:not(:disabled){background:color-mix(in srgb,var(--accent) 85%,var(--ink));color:#fff;transform:translateY(-1px)}
+.btn-drop{background:var(--mag);border-color:color-mix(in srgb,var(--mag) 70%,#000);color:#fff}
+.btn-drop:hover:not(:disabled){background:color-mix(in srgb,var(--mag) 85%,#000);color:#fff}
+.btn-glow{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#7c4dff));color:#fff;border:0;box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 35%,transparent)}
+.btn-glow:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
+
+/* Laboratorio: escena + consola */
+.lab-grid{display:grid;gap:14px}
+@media(min-width:1024px){.lab-grid{grid-template-columns:minmax(0,1.35fr) minmax(300px,1fr)}}
+.scene-box{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--scene)}
+canvas.scene{display:block;width:100%;touch-action:none}
+.scene-hud{position:absolute;left:0;top:0;right:0;display:flex;gap:.4rem;flex-wrap:wrap;padding:.5rem;pointer-events:none}
+.scene-hud .chip{pointer-events:auto;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(4px)}
+.console{display:grid;gap:12px;align-content:start}
+.ctrl{display:grid;gap:.3rem}
+.lbl{font-size:.82rem;font-weight:700;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.lbl b{color:var(--accent);font-family:var(--f-mono)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 50%,#7c4dff));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--accent);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--accent);cursor:pointer}
+input[type=text],input[type=number],select,textarea{width:100%;padding:.5rem .6rem;border:1px solid var(--line);border-radius:9px;background:var(--surface-2);color:var(--ink);font-family:var(--f-body);font-size:.92rem}
+input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(--accent) 45%,transparent);border-color:var(--accent)}
+.field-row{display:flex;gap:.5rem;align-items:center}
+.switch{display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.88rem;font-weight:600}
+.switch input{width:38px;height:22px;-webkit-appearance:none;appearance:none;background:var(--line);border-radius:99px;position:relative;transition:.2s;flex:none}
+.switch input:checked{background:var(--accent)}
+.switch input::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s}
+.switch input:checked::after{left:19px}
+
+/* Cronómetro digital */
+.timer{background:var(--device);border-radius:12px;padding:.85rem;color:#dfe5ea}
+.timer .thead{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#9fb0bd;margin-bottom:.5rem}
+.lcd{background:var(--lcd-bg);color:var(--lcd-ink);font-family:var(--f-lcd);border-radius:6px;padding:.5rem .7rem;box-shadow:inset 0 2px 6px rgba(0,0,0,.35);text-align:right}
+.lcd .big{font-size:2.1rem;line-height:1}
+.lcd .sub{font-size:.72rem;letter-spacing:.05em;opacity:.8}
+.lcd.off{background:#55604a;color:transparent}
+.ports{display:flex;gap:.5rem;margin-top:.55rem;font-size:.72rem}
+.port{flex:1;border:1px solid #4a535c;border-radius:7px;padding:.3rem .45rem;color:#aeb9c4;text-align:center}
+.port b{display:block;color:#eef2f6;font-family:var(--f-mono);font-size:.82rem}
+.port.hot{border-color:var(--ok);color:#bfe7cf}
+.port.hot b{color:#7be0a4}
+
+/* Barra de registro */
+.rec-bar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:space-between;margin-top:.6rem;padding:.6rem .75rem;border:1px dashed color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:10px;background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
+
+/* Tablas de datos */
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:10px}
+table.data{border-collapse:collapse;width:100%;min-width:560px;font-size:.9rem}
+table.data th,table.data td{border:1px solid var(--line);padding:.42rem .55rem;text-align:center}
+table.data th{background:var(--accent-soft);font-family:var(--f-display);font-weight:700;position:sticky;top:0}
+table.data td.calc{font-family:var(--f-mono);background:color-mix(in srgb,var(--accent-soft) 40%,transparent)}
+table.data td.edited{box-shadow:inset 0 0 0 9999px color-mix(in srgb,var(--warn) 14%,transparent)}
+table.data tfoot td,table.data tr.sum td{font-weight:700;background:var(--surface-2)}
+table.data input{padding:.2rem .3rem;text-align:center;font-family:var(--f-mono);font-size:.86rem;background:transparent;border:1px solid transparent}
+table.data input:hover{border-color:var(--line)}
+table.data .del{color:var(--bad)}
+
+/* Subpestañas (análisis) */
+.subtabs{display:inline-flex;gap:.25rem;background:var(--surface-2);padding:.25rem;border-radius:10px;border:1px solid var(--line);flex-wrap:wrap}
+.subtab{padding:.35rem .7rem;border-radius:7px;font-weight:600;font-size:.85rem;color:var(--muted)}
+.subtab[aria-selected="true"]{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+/* Graficador GeoGebra */
+.ggp{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+canvas.plot{display:block;width:100%;touch-action:none;cursor:crosshair}
+.ggp-toolbar{position:absolute;left:.5rem;top:.5rem;display:flex;gap:.3rem;background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid var(--line);border-radius:8px;padding:.25rem;backdrop-filter:blur(4px)}
+.ggp-toolbar .iconbtn{width:30px;height:30px}
+.ggp-legend{position:absolute;right:.5rem;top:.5rem;max-width:min(300px,60%);background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--line);border-radius:8px;padding:.35rem;display:grid;gap:.15rem;font-size:.8rem;backdrop-filter:blur(4px)}
+.ggp-legend .it{display:flex;align-items:center;gap:.45rem;padding:.12rem .25rem;border-radius:5px;cursor:pointer}
+.ggp-legend .it:hover{background:var(--surface-2)}
+.ggp-legend .it.off{opacity:.4}
+.ggp-legend .sw{width:16px;height:4px;border-radius:2px;flex:none}
+.ggp-legend .sw.pt{height:10px;width:10px;border-radius:50%}
+.ggp-tip{position:absolute;z-index:4;pointer-events:none;max-width:240px;font-size:.8rem;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:.35rem .5rem;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem;margin-top:.7rem}
+.stat{border:1px solid var(--line);border-radius:10px;padding:.55rem .7rem;background:var(--surface-2)}
+.stat b{display:block;font-family:var(--f-mono);font-size:1.25rem;color:var(--accent)}
+.stat small{color:var(--muted);font-size:.74rem;font-weight:600}
+
+/* Informe */
+.paper{background:var(--paper);color:var(--paper-ink);border:1px solid var(--paper-line);border-radius:6px;padding:26px 30px;max-width:900px;margin:0 auto;font-family:"Source Sans 3",Arial,sans-serif}
+.paper h2,.paper h3{font-family:"Barlow Semi Condensed",Arial,sans-serif;color:#111}
+.paper .hdr{display:grid;grid-template-columns:1fr 1fr;gap:.2rem .8rem;border:1px solid var(--paper-line);border-radius:4px;padding:.4rem .6rem;margin:.3rem 0;font-size:.86rem}
+.paper table{border-collapse:collapse;width:100%;font-size:.84rem;margin:.5rem 0}
+.paper table td,.paper table th{border:1px solid var(--paper-line);padding:.3rem .45rem}
+.paper .sig{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2.4rem}
+.paper .sig div{border-top:1px solid #111;padding-top:.3rem;text-align:center;font-size:.82rem}
+
+/* Taller */
+.tw-hero{overflow:hidden;border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:radial-gradient(1000px 260px at 0% 0%,color-mix(in srgb,var(--accent) 20%,transparent),transparent),radial-gradient(800px 240px at 100% 0%,color-mix(in srgb,#7c4dff 16%,transparent),transparent),var(--surface)}
+.tw-q{border:1px solid var(--line);border-radius:11px;padding:.9rem 1rem;margin:.7rem 0;background:var(--surface)}
+.tw-q.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok-soft) 55%,var(--surface))}
+.tw-q.part{border-color:var(--warn);background:color-mix(in srgb,var(--warn-soft) 55%,var(--surface))}
+.tw-q.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad-soft) 55%,var(--surface))}
+.tw-q .qh{font-weight:700;margin-bottom:.45rem;display:flex;gap:.5rem}
+.tw-q .qh .qn{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:.8rem;font-family:var(--f-mono)}
+.opts{display:grid;gap:.4rem;margin:.4rem 0}
+.opt{display:flex;gap:.55rem;align-items:flex-start;padding:.5rem .7rem;border:1px solid var(--line);border-radius:9px;cursor:pointer;background:var(--surface);transition:.12s}
+.opt:hover{border-color:var(--accent)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.incorrect{border-color:var(--bad);background:var(--bad-soft)}
+.opt input{flex:none;margin-top:.15rem}
+.fb{font-size:.86rem;margin-top:.5rem;padding:.5rem .65rem;border-radius:8px;display:none}
+.fb.show{display:block}
+.gauge-wrap{display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap;justify-content:center}
+.bd{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.6rem;flex:1;min-width:240px}
+
+/* Toast */
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:80;max-width:min(560px,92vw)}
+#toast .msg{box-shadow:0 10px 30px rgba(0,0,0,.25);background:var(--surface)}
+
+/* Modal / tour */
+.modal{position:fixed;inset:0;z-index:90;background:rgba(6,12,18,.6);backdrop-filter:blur(3px);display:grid;place-items:center;padding:16px}
+.modal-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;width:100%;max-width:640px;max-height:calc(100dvh - 32px);overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.4);padding:20px}
+.spot{position:fixed;z-index:88;border:3px solid var(--accent);border-radius:12px;box-shadow:0 0 0 9999px rgba(6,12,18,.55);pointer-events:none;transition:.25s}
+.spot-tip{position:fixed;z-index:89;max-width:300px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.7rem .85rem;box-shadow:0 14px 40px rgba(0,0,0,.35);font-size:.9rem}
+
+.footer{color:var(--muted);font-size:.82rem;text-align:center;padding:1rem 0 2rem}
+@media print{
+  .inst,.topbar,.tabs,.no-print,#toast,.footer{display:none!important}
+  .tabpane{border:0;padding:0;box-shadow:none}
+  body,html{background:#fff}
+  .paper{border:0;max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="inst"><div class="wrap">
+  <span><b>UNIVERSIDAD TECNOLÓGICA DE PEREIRA</b> · Departamento de Física</span>
+  <span class="sedes">Laboratorio de Física I · Pereira, Risaralda</span>
+</div></div>
+
+<header class="topbar"><div class="wrap">
+  <div class="brand">
+    <div class="mark"><i data-lucide="arrow-down-to-line"></i></div>
+    <div>
+      <h1>Laboratorio Virtual · Caída Libre</h1>
+      <small>Práctica de Cinemática · determinación experimental de <i>g</i></small>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn btn-sm no-print" id="btnTour"><i data-lucide="play-circle"></i><span class="lbl">Guía rápida</span></button>
+  <button class="iconbtn no-print" id="btnTheme" title="Modo claro / oscuro" aria-label="Cambiar tema"><i data-lucide="moon"></i></button>
+</div></header>
+
+<main class="wrap" style="padding-bottom:2rem">
+  <nav class="tabs" role="tablist" aria-label="Secciones del laboratorio">
+    <button class="tab" role="tab" data-tab="teoria" aria-selected="true"><span class="n">1</span><span class="lbl">Teoría y Objetivos</span></button>
+    <button class="tab" role="tab" data-tab="lab"><span class="n">2</span><span class="lbl">Laboratorio Virtual</span></button>
+    <button class="tab" role="tab" data-tab="datos"><span class="n">3</span><span class="lbl">Datos Experimentales</span></button>
+    <button class="tab" role="tab" data-tab="analisis"><span class="n">4</span><span class="lbl">Análisis Gráfico</span></button>
+    <button class="tab" role="tab" data-tab="informe"><span class="n">5</span><span class="lbl">Informe</span></button>
+    <button class="tab" role="tab" data-tab="taller"><span class="n">6</span><span class="lbl">Taller Evaluativo</span></button>
+  </nav>
+
+  <!-- ===================== 1 · TEORÍA ===================== -->
+  <section class="tabpane" id="pane-teoria" role="tabpanel">
+    <div class="grid2">
+      <div>
+        <div class="panel-title"><i data-lucide="book-open"></i>Marco teórico</div>
+        <p>La <b>caída libre</b> es el movimiento de un cuerpo sometido únicamente a la fuerza gravitacional,
+        con aceleración constante <i>g</i> dirigida hacia el centro de la Tierra. Si se suelta desde el reposo
+        (\(v_0=0\)) y se toma como origen el punto de liberación con el eje positivo hacia abajo, la cinemática
+        de aceleración constante da la distancia recorrida:</p>
+        <div class="formula">$$ h(t)=v_0\,t+\tfrac{1}{2}\,g\,t^{2}\;\xrightarrow{\,v_0=0\,}\; h=\tfrac{1}{2}\,g\,t^{2} $$</div>
+        <p>y la rapidez instantánea \(v(t)=g\,t\), de modo que la rapidez de impacto tras caer una altura
+        \(h\) es \(v=\sqrt{2gh}\).</p>
+
+        <div class="panel-title" style="margin-top:1rem"><i data-lucide="trending-up"></i>Linealización \(Y=mX+b\)</div>
+        <p>Para hallar <i>g</i> por regresión lineal se linealiza \(h=\tfrac12 g\,t^2\). Tomando como variable
+        independiente \(X=t^{2}\) y dependiente \(Y=h\):</p>
+        <div class="formula">$$ \underbrace{h}_{Y}=\underbrace{\tfrac{g}{2}}_{m}\,\underbrace{t^{2}}_{X}+\underbrace{b}_{\approx\,0} \qquad\Rightarrow\qquad \boxed{\,g = 2m\,} $$</div>
+        <p>La pendiente de la recta vale \(m=g/2\); el intercepto \(b\) debería ser nulo y, en la práctica,
+        recoge pequeños retardos sistemáticos del electroimán y del cronómetro (del orden de milisegundos).
+        La incertidumbre de la gravedad se propaga desde la de la pendiente:</p>
+        <div class="formula">$$ \sigma_g = 2\,\sigma_m,\qquad \%E=\frac{\lvert g_{\text{exp}}-g_{\text{ref}}\rvert}{g_{\text{ref}}}\times100,\quad g_{\text{ref}}\approx 9.78\ \text{m/s}^2 $$</div>
+      </div>
+      <div>
+        <div class="panel-title"><i data-lucide="target"></i>Objetivos por competencias</div>
+        <ul class="goals">
+          <li><b>Modelar</b> el movimiento de caída libre a partir de las ecuaciones de la cinemática de aceleración constante.</li>
+          <li><b>Medir</b> con criterio el tiempo de caída para distintas alturas, repitiendo y promediando.</li>
+          <li><b>Linealizar</b> la relación \(h\)–\(t\) y aplicar <b>regresión por mínimos cuadrados</b> para determinar \(g\).</li>
+          <li><b>Estimar incertidumbres</b> (\(\sigma_m\), \(\sigma_g\)) y evaluar el <b>error porcentual</b> frente al valor de referencia local.</li>
+          <li><b>Argumentar</b> el efecto del arrastre aerodinámico y la validez del modelo ideal en las condiciones de Pereira.</li>
+        </ul>
+
+        <div class="msg msg-warn">
+          <i data-lucide="alert-triangle"></i>
+          <p><b>Nota metodológica.</b> Trabaje con alturas entre <b>0.30 m</b> y <b>1.80 m</b> y <b>tres repeticiones</b>
+          por altura. Alturas muy pequeñas producen tiempos tan cortos que el error relativo del cronómetro crece;
+          alturas muy grandes exponen más tiempo la esfera al arrastre del aire.</p>
+        </div>
+        <div class="card">
+          <div class="panel-title" style="font-size:.98rem"><i data-lucide="mountain"></i>Condiciones de Pereira</div>
+          <p style="margin:.2rem 0">Altitud ≈ 1411 m s.n.m. · densidad del aire \(\rho\approx1.06\ \text{kg/m}^3\) ·
+          \(g_{\text{ref}}=9.78\ \text{m/s}^2\). La esfera de acero (⌀ 16 mm, ≈ 16.8 g) permite activar o desactivar
+          el <b>arrastre cuadrático</b> en el laboratorio para comparar con el modelo ideal.</p>
+          <div class="chiprow">
+            <span class="chip"><i data-lucide="globe"></i>g = 9.78 m/s²</span>
+            <span class="chip"><i data-lucide="wind"></i>ρ = 1.06 kg/m³</span>
+            <span class="chip"><i data-lucide="circle"></i>⌀ 16 mm · 16.8 g</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="msg msg-info"><i data-lucide="info"></i><p>Comience en la pestaña <b>Laboratorio Virtual</b>: fije una altura
+    con el electroimán, pulse <b>Soltar</b>, lea el tiempo en el cronómetro y pulse <b>Anotar</b>. Repita tres veces por altura
+    y avance a <b>Datos</b> y <b>Análisis</b>.</p></div>
+  </section>
+
+  <!-- ===================== 2 · LABORATORIO ===================== -->
+  <section class="tabpane" id="pane-lab" role="tabpanel" hidden>
+    <div class="lab-grid">
+      <div>
+        <div class="scene-box">
+          <canvas id="scene" class="scene" height="560"></canvas>
+          <div class="scene-hud">
+            <span class="chip" id="hudH"><i data-lucide="ruler"></i>h = — m</span>
+            <span class="chip" id="hudState"><i data-lucide="circle-pause"></i>Listo</span>
+            <span class="chip" id="hudDrag"><i data-lucide="wind"></i>Arrastre: off</span>
+          </div>
+        </div>
+        <div class="rec-bar" id="recBar">
+          <span id="recMsg" style="font-size:.9rem"><i data-lucide="pencil-ruler" class="lucide"></i> Suelte la esfera para habilitar el registro.</span>
+          <button class="btn btn-primary" id="btnRec" disabled><i data-lucide="save"></i>Anotar (h, t)</button>
+        </div>
+      </div>
+      <div class="console">
+        <div class="card">
+          <div class="panel-title" style="font-size:1rem"><i data-lucide="sliders-horizontal"></i>Montaje</div>
+          <div class="ctrl">
+            <label class="lbl" for="rngH">Altura de caída <span>h</span><b id="outH">1.000 m</b></label>
+            <input type="range" id="rngH" min="0.30" max="1.80" step="0.001" value="1.000">
+          </div>
+          <p class="muted" style="font-size:.82rem;margin:.4rem 0 0">Arrastre el <b>electroimán</b> en la escena o use el
+          deslizador. Mida la altura con la <b>cinta</b>: lleve la línea roja al centro de la esfera y use la lupa.</p>
+          <label class="switch" style="margin-top:.6rem"><input type="checkbox" id="chkDrag"><span>Incluir arrastre aerodinámico (ρ = 1.06)</span></label>
+          <label class="switch" style="margin-top:.4rem"><input type="checkbox" id="chkTrail" checked><span>Mostrar estroboscopía (posiciones cada Δt)</span></label>
+        </div>
+
+        <div class="timer">
+          <div class="thead"><span>PASCO · Cronómetro digital</span><span id="tmrMode">TIME · 2 GATES</span></div>
+          <div class="lcd off" id="lcd"><div class="big" id="lcdBig">0.0000</div><div class="sub" id="lcdSub">s · listo</div></div>
+          <div class="ports">
+            <div class="port" id="port1"><span>ENT&nbsp;1</span><b>Liberación</b></div>
+            <div class="port" id="port2"><span>ENT&nbsp;2</span><b>Impacto</b></div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <button class="btn btn-drop" id="btnDrop" style="flex:1;justify-content:center"><i data-lucide="arrow-down-to-line"></i>Soltar</button>
+          <button class="btn" id="btnReset" title="Reponer esfera"><i data-lucide="rotate-ccw"></i></button>
+        </div>
+        <div class="msg msg-info" style="margin:0"><i data-lucide="info"></i><p id="repInfo" style="font-size:.86rem">Repeticiones anotadas a esta altura: 0 / 3.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3 · DATOS ===================== -->
+  <section class="tabpane" id="pane-datos" role="tabpanel" hidden>
+    <div class="panel-title"><i data-lucide="table"></i>Registro de mediciones</div>
+    <p class="muted" style="margin:.2rem 0 .6rem">Cada fila es una altura con sus tiempos de caída. Los promedios y las
+    variables linealizadas \(X=\bar t^{\,2}\), \(Y=h\) se calculan automáticamente.</p>
+    <div class="rec-bar" style="background:transparent;border-style:solid">
+      <span id="editNote" style="font-size:.86rem">Los datos entran con el botón <b>Anotar</b> del laboratorio. Los promedios se calculan solos.</span>
+      <span style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn btn-sm" id="btnCsv"><i data-lucide="clipboard-copy"></i>Copiar CSV</button>
+        <button class="btn btn-sm" id="btnDownCsv"><i data-lucide="download"></i>Descargar CSV</button>
+        <button class="btn btn-sm" id="btnManual"><i data-lucide="pencil"></i>Edición manual</button>
+        <button class="btn btn-sm" id="btnClear"><i data-lucide="trash-2"></i>Vaciar</button>
+      </span>
+    </div>
+    <div id="rawEmpty" class="msg msg-info"><i data-lucide="info"></i><p>Aún no hay mediciones. En <b>Laboratorio Virtual</b>
+    suelte la esfera y pulse <b>Anotar</b>: se guardan juntos la altura \(h\) y el tiempo \(t\) de esa caída.</p></div>
+    <div class="tablewrap" id="dataWrap" hidden><table class="data" id="dataTbl"></table></div>
+    <div class="stat-grid" id="dataStats"></div>
+  </section>
+
+  <!-- ===================== 4 · ANÁLISIS ===================== -->
+  <section class="tabpane" id="pane-analisis" role="tabpanel" hidden>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:.7rem">
+      <div class="subtabs" role="tablist">
+        <button class="subtab" role="tab" data-plot="lin" aria-selected="true">Y = h vs X = t²</button>
+        <button class="subtab" role="tab" data-plot="ht">h vs t</button>
+        <button class="subtab" role="tab" data-plot="vt">v vs t</button>
+      </div>
+      <span class="muted" style="font-size:.82rem"><i data-lucide="move" class="lucide"></i> arrastrar = desplazar · rueda = zoom · doble clic = autoajustar</span>
+    </div>
+    <div class="ggp">
+      <canvas id="plot" class="plot" height="440"></canvas>
+      <div class="ggp-toolbar">
+        <button class="iconbtn" id="plotFit" title="Autoajustar"><i data-lucide="maximize"></i></button>
+        <button class="iconbtn" id="plotIn" title="Acercar"><i data-lucide="zoom-in"></i></button>
+        <button class="iconbtn" id="plotOut" title="Alejar"><i data-lucide="zoom-out"></i></button>
+      </div>
+      <div class="ggp-legend" id="plotLegend"></div>
+      <div class="ggp-tip" id="plotTip" hidden></div>
+    </div>
+    <div id="anEmpty" class="msg msg-info"><i data-lucide="info"></i><p>Registre al menos <b>3 alturas</b> con sus tiempos para
+    ver la regresión y el cálculo de <i>g</i>.</p></div>
+    <div id="anResults" hidden>
+      <div class="stat-grid" id="regStats"></div>
+      <div class="msg" id="regVerdict" style="margin-top:.8rem"></div>
+    </div>
+  </section>
+
+  <!-- ===================== 5 · INFORME ===================== -->
+  <section class="tabpane" id="pane-informe" role="tabpanel" hidden>
+    <div class="no-print" style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:.8rem">
+      <div class="grid2" style="flex:1;gap:.6rem">
+        <div class="ctrl"><label class="lbl" for="stName">Estudiante(s) y código(s)</label><input type="text" id="stName" placeholder="Nombres y códigos"></div>
+        <div class="ctrl"><label class="lbl" for="stGroup">Grupo / Mesa</label><input type="text" id="stGroup" placeholder="Ej. L3 · Mesa 4"></div>
+        <div class="ctrl"><label class="lbl" for="stProf">Docente</label><input type="text" id="stProf" placeholder="Nombre del docente"></div>
+        <div class="ctrl"><label class="lbl" for="stDate">Fecha</label><input type="text" id="stDate"></div>
+      </div>
+      <button class="btn btn-primary" id="btnPrint"><i data-lucide="printer"></i>Imprimir / Guardar PDF</button>
+    </div>
+    <div id="reportHost"></div>
+  </section>
+
+  <!-- ===================== 6 · TALLER ===================== -->
+  <section class="tabpane" id="pane-taller" role="tabpanel" hidden>
+    <div class="tw-hero">
+      <div class="eyebrow">Taller evaluativo · autocalificable · nota de 1.0 a 5.0</div>
+      <h2 style="margin:.2rem 0">Evalúe su práctica de caída libre</h2>
+      <p style="margin:0;max-width:70ch">Las preguntas de cálculo usan <b>sus propias mediciones</b>, de modo que cada grupo
+      tiene un taller distinto. Al enviarlo verá la nota, el análisis de cada respuesta, y la calificación quedará registrada
+      en la hoja del docente.</p>
+    </div>
+    <div class="grid2" style="margin-top:.9rem">
+      <div class="ctrl"><label class="lbl" for="twName">Estudiante(s)</label><input type="text" id="twName" placeholder="Nombres completos"></div>
+      <div class="ctrl"><label class="lbl" for="twCodes">Código(s)</label><input type="text" id="twCodes" placeholder="Códigos UTP"></div>
+      <div class="ctrl"><label class="lbl" for="twGroup">Grupo</label><input type="text" id="twGroup" placeholder="Grupo / mesa"></div>
+      <div class="ctrl"><label class="lbl" for="twProf">Docente</label><input type="text" id="twProf" placeholder="Docente"></div>
+    </div>
+    <div id="twEmpty" class="msg msg-warn" style="margin-top:.8rem"><i data-lucide="alert-triangle"></i><p>Registre sus datos en el
+    laboratorio (al menos 3 alturas) para generar el taller con sus propios valores.</p></div>
+    <div id="twBody" hidden></div>
+    <div class="no-print" id="twActions" hidden style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:1rem">
+      <details style="flex:1;min-width:260px">
+        <summary class="muted" style="cursor:pointer;font-size:.86rem">Opciones de envío (Apps Script)</summary>
+        <div class="ctrl" style="margin-top:.5rem"><label class="lbl" for="gsUrl">URL de la aplicación web de Apps Script</label>
+          <div class="field-row"><input type="text" id="gsUrl" placeholder="https://script.google.com/macros/s/…/exec" style="font-family:var(--f-mono);font-size:.8rem">
+          <button class="btn btn-sm" id="gsTest"><i data-lucide="activity"></i>Probar</button></div>
+          <div id="gsTestRes" style="margin-top:.4rem"></div>
+        </div>
+      </details>
+      <div style="display:flex;gap:.6rem">
+        <button class="btn" id="twGrade"><i data-lucide="calculator"></i>Calificar</button>
+        <button class="btn btn-glow" id="twSend"><i data-lucide="send"></i>Enviar al docente</button>
+      </div>
+    </div>
+    <div id="twResult" hidden style="margin-top:1rem"></div>
+  </section>
+</main>
+
+<div id="toast" hidden></div>
+<div class="footer wrap">Laboratorio virtual de Caída Libre · Física I · Universidad Tecnológica de Pereira. Elaborado por Luis Hernando Blandón Dávila.</div>
+
+<script>
+"use strict";
+/* ============================================================================
+   NÚCLEO
+   ========================================================================== */
+const $  = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function ic(){ try{ if(window.lucide&&lucide.createIcons) lucide.createIcons(); }catch(e){} }
+function safeTypeset(el){ try{ if(window.MathJax&&MathJax.typesetPromise) return MathJax.typesetPromise(el?[el]:undefined); }catch(e){} return Promise.resolve(); }
+
+/* Formato con coma decimal (estilo latino) */
+function nf(x,d=3){ if(x==null||!isFinite(x)) return '—'; return Number(x).toFixed(d).replace('.',','); }
+function sciTxt(x,d=3){
+  if(x===0) return '0'; if(!isFinite(x)) return '—';
+  const a=Math.abs(x);
+  if(a>=1e-2&&a<1e5) return nf(x,d);
+  const e=Math.floor(Math.log10(a)), m=x/Math.pow(10,e);
+  const S={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻'};
+  return nf(m,d)+'×10'+String(e).split('').map(c=>S[c]||c).join('');
+}
+
+/* Constantes físicas (Pereira) */
+const G=9.78, RHO=1.06, CD=0.47;
+const BALL_D=0.016, BALL_M=0.0168;                 // esfera de acero ⌀16 mm ≈16.8 g
+const BALL_A=Math.PI*(BALL_D/2)**2;
+const KDRAG=0.5*RHO*CD*BALL_A/BALL_M;              // coef. de arrastre cuadrático / masa
+const GREF_LABEL='9,78 m/s²';
+
+/* Toast */
+let toastT;
+function toast(html,kind='info'){
+  const t=$('#toast'); const ico={info:'info',ok:'check-circle-2',warn:'alert-triangle',bad:'alert-octagon'}[kind]||'info';
+  t.innerHTML=`<div class="msg msg-${kind}"><i data-lucide="${ico}"></i><p>${html}</p></div>`;
+  t.hidden=false; ic(); clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true,4600);
+}
+
+/* Estado persistente */
+const DEFAULT_GS_URL='https://script.google.com/macros/s/AKfycbxrS2aJoQayvsX29heIvl4H2BpL229F6BDRkJsbShX54qjC5qAmgkfJhE9epSYm3Keu/exec';
+const S={
+  rows:[],              // [{reps:[{h,t}], manual:false}]
+  tab:'teoria',
+  theme:null,
+  manualEdit:false,
+  student:{name:'',group:'',prof:'',date:''},
+  gsUrl:DEFAULT_GS_URL,
+  lab:{ h:1.000, line:1.000, fallen:0, dropping:false, lastT:null, lastH:null, recorded:true, drag:false, trail:true, samples:[] },
+  taller:{answers:{}, graded:null, intento:0}
+};
+function save(){ try{ const c=JSON.parse(JSON.stringify(S)); delete c.lab.samples; localStorage.setItem('utp-caidalibre',JSON.stringify(c)); }catch(e){} }
+function load(){ try{ const r=localStorage.getItem('utp-caidalibre'); if(!r) return; const o=JSON.parse(r);
+  if(o.rows)S.rows=o.rows; if(o.student)Object.assign(S.student,o.student); if(o.gsUrl)S.gsUrl=o.gsUrl;
+  if(o.theme)S.theme=o.theme; if(typeof o.manualEdit==='boolean')S.manualEdit=o.manualEdit;
+  if(o.lab){S.lab.h=o.lab.h??1; S.lab.line=o.lab.line??S.lab.h; S.lab.drag=!!o.lab.drag; S.lab.trail=o.lab.trail!==false;}
+}catch(e){} }
+
+/* ============================================================================
+   TEMA
+   ========================================================================== */
+function applyTheme(t){
+  if(t) document.documentElement.setAttribute('data-theme',t); else document.documentElement.removeAttribute('data-theme');
+  const dark = t==='dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches);
+  $('#btnTheme').innerHTML = dark?'<i data-lucide="sun"></i>':'<i data-lucide="moon"></i>'; ic();
+  setTimeout(()=>{ renderAllCanvas(); }, 30);
+}
+$('#btnTheme').onclick=()=>{ S.theme = (S.theme==='dark')?'light':'dark'; applyTheme(S.theme); save(); };
+
+/* ============================================================================
+   CANVAS: utilidades de dibujo
+   ========================================================================== */
+const cv={};  // registro
+function setupCanvas(id,draw){
+  const c=document.getElementById(id); if(!c) return null;
+  const ctx=c.getContext('2d'); const o={c,ctx,draw,w:0,h:0};
+  // Altura de diseño leída UNA sola vez: c.height se reescribe abajo multiplicada por dpr,
+  // y releerla en cada resize hacía crecer la escena al volver a la pestaña (pantallas con escala > 100 %).
+  const baseH=parseInt(c.getAttribute('height'))||400;
+  o.resize=()=>{ const dpr=Math.min(window.devicePixelRatio||1,2.5); const rect=c.getBoundingClientRect();
+    const h=baseH; const w=rect.width||c.clientWidth||600;
+    o.w=w;o.h=h; c.style.height=h+'px'; c.width=Math.round(w*dpr); c.height=Math.round(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0); o.render(); };
+  o.render=()=>{ if(o.w>0&&o.draw) o.draw(ctx,o.w,o.h); };
+  cv[id]=o; return o;
+}
+function renderAllCanvas(){ Object.values(cv).forEach(o=>{ const r=o.c.getBoundingClientRect(); if(r.width>0){ if(r.width!==o.w) o.resize(); else o.render(); } }); }
+let rsT; window.addEventListener('resize',()=>{ clearTimeout(rsT); rsT=setTimeout(renderAllCanvas,120); });
+function CSS(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function ptr(c,ev){ const r=c.getBoundingClientRect(); const t=ev.touches?ev.touches[0]:ev; return {x:t.clientX-r.left,y:t.clientY-r.top}; }
+function arrow(ctx,x1,y1,x2,y2,col,w=2,hd=9){ const a=Math.atan2(y2-y1,x2-x1),L=Math.hypot(x2-x1,y2-y1); if(L<1)return;
+  ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=w;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-hd*Math.cos(a-.4),y2-hd*Math.sin(a-.4));ctx.lineTo(x2-hd*Math.cos(a+.4),y2-hd*Math.sin(a+.4));ctx.closePath();ctx.fill();ctx.restore(); }
+function tx(ctx,s,x,y,col,size=12,al='left',w=500,base='middle'){ ctx.save();ctx.fillStyle=col;ctx.font=`${w} ${size}px ${CSS('--f-body')||'sans-serif'}`;ctx.textAlign=al;ctx.textBaseline=base;ctx.fillText(s,x,y);ctx.restore(); }
+function txm(ctx,s,x,y,col,size=12,al='left'){ ctx.save();ctx.fillStyle=col;ctx.font=`500 ${size}px ${CSS('--f-mono')||'monospace'}`;ctx.textAlign=al;ctx.textBaseline='middle';ctx.fillText(s,x,y);ctx.restore(); }
+
+/* ============================================================================
+   FÍSICA · integración RK4 de la caída
+   dy/dt = v ; dv/dt = g − k·v²   (v>0 hacia abajo)
+   ========================================================================== */
+function simulateFall(h, drag){
+  const k = drag?KDRAG:0;
+  const f=(y,v)=>[v, G - k*v*v];
+  let y=0,v=0,t=0; const dt=1e-4; const samp=[{t:0,y:0,v:0}];
+  let guard=0;
+  while(y<h && guard<2e6){
+    const [k1y,k1v]=f(y,v);
+    const [k2y,k2v]=f(y+0.5*dt*k1y, v+0.5*dt*k1v);
+    const [k3y,k3v]=f(y+0.5*dt*k2y, v+0.5*dt*k2v);
+    const [k4y,k4v]=f(y+dt*k3y, v+dt*k3v);
+    const ny=y+dt/6*(k1y+2*k2y+2*k3y+k4y);
+    const nv=v+dt/6*(k1v+2*k2v+2*k3v+k4v);
+    y=ny; v=nv; t+=dt; guard++;
+    if(guard%20===0) samp.push({t,y:Math.min(y,h),v});
+  }
+  // interpolación fina del instante en que y=h
+  const prev=samp[samp.length-1];
+  const tHit = t - dt*(y-h)/Math.max(v,1e-9);
+  samp.push({t:tHit,y:h,v});
+  return { t:tHit, v, samples:samp };
+}
+const idealTime=h=>Math.sqrt(2*h/G);
+
+/* ============================================================================
+   LABORATORIO VIRTUAL · escena
+   ========================================================================== */
+const LAB=S.lab;
+let scene, dragTarget=null, animStart=0, animDur=0;
+const HMAX=1.95;
+const BALL_PX=9;                       // radio dibujado de la esfera (px)
+let bounce=null, bounceOffM=0;         // rebote visual tras el impacto (el cronómetro ya se detuvo en ENT 2)
+
+function sceneGeom(w,h){
+  const top=46, groundY=h-64, cx=w*0.40;
+  const ppm=(groundY-top)/HMAX;
+  return {top,groundY,cx,ppm,
+    yOf:(fallen)=> groundY - (LAB.h - fallen)*ppm,   // posición vertical de la esfera (metros caídos)
+    // Centro dibujado de la esfera: cuelga tangente bajo la bobina y termina apoyada sobre el sensor (no los atraviesa)
+    ballY:(fallen)=>{ const y0=groundY-LAB.h*ppm+2+BALL_PX, y1=groundY-9-BALL_PX; return y0+(y1-y0)*clamp(fallen/Math.max(LAB.h,1e-6),0,1); },
+    magY:()=> groundY - LAB.h*ppm,
+    lineY:()=> groundY - LAB.line*ppm,
+    hAtY:(py)=> clamp((groundY-py)/ppm,0,HMAX)
+  };
+}
+
+scene=setupCanvas('scene',(ctx,w,h)=>{
+  const G0=sceneGeom(w,h);
+  ctx.clearRect(0,0,w,h);
+  // fondo + rejilla
+  ctx.fillStyle=CSS('--scene'); ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle=CSS('--scene-grid'); ctx.lineWidth=1;
+  for(let gx=0;gx<=w;gx+=28){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,h);ctx.stroke();}
+  for(let gy=0;gy<=h;gy+=28){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(w,gy);ctx.stroke();}
+  // mesa / base
+  ctx.fillStyle=CSS('--wood'); ctx.fillRect(0,G0.groundY,w,h-G0.groundY);
+  ctx.fillStyle=CSS('--wood-dark'); ctx.fillRect(0,G0.groundY,w,4);
+
+  // soporte vertical (varilla + base trípode esquemática)
+  const railX=G0.cx-54;
+  ctx.fillStyle=CSS('--metal'); ctx.fillRect(railX-5,G0.top-18,10,G0.groundY-G0.top+18);
+  ctx.fillStyle=CSS('--metal-dark'); ctx.fillRect(railX-26,G0.groundY-10,52,10);
+  ctx.beginPath();ctx.moveTo(railX-40,G0.groundY);ctx.lineTo(railX,G0.groundY-10);ctx.lineTo(railX+40,G0.groundY);ctx.closePath();
+  ctx.fillStyle=CSS('--metal-dark');ctx.fill();
+
+  // plomada (verticalidad)
+  ctx.strokeStyle=CSS('--muted'); ctx.setLineDash([3,3]); ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(railX+2,G0.top-10);ctx.lineTo(railX+2,G0.groundY-6);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=CSS('--metal-dark'); ctx.beginPath();ctx.moveTo(railX+2,G0.groundY-16);ctx.lineTo(railX-4,G0.groundY-6);ctx.lineTo(railX+8,G0.groundY-6);ctx.closePath();ctx.fill();
+
+  // electroimán (brazo + bobina) a la altura h
+  const magY=G0.magY();
+  ctx.fillStyle=CSS('--metal-dark'); ctx.fillRect(railX,magY-6,G0.cx-railX-2,8);           // brazo
+  const emEnergized=!LAB.dropping && LAB.fallen<=0.0001;
+  ctx.fillStyle=emEnergized?CSS('--mag'):CSS('--metal');
+  ctx.fillRect(G0.cx-14,magY-12,28,14);                                                    // bobina
+  ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=1;ctx.strokeRect(G0.cx-14,magY-12,28,14);
+  for(let i=0;i<4;i++){ctx.strokeStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.moveTo(G0.cx-14,magY-10+i*3.5);ctx.lineTo(G0.cx+14,magY-10+i*3.5);ctx.stroke();}
+  tx(ctx,emEnergized?'ELECTROIMÁN ●':'electroimán',G0.cx+20,magY-5,emEnergized?CSS('--mag'):CSS('--muted'),10.5,'left',700);
+  // cable ENT1
+  ctx.strokeStyle=CSS('--mag');ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(G0.cx-14,magY-5);ctx.bezierCurveTo(railX-30,magY+20,railX-30,magY+40,railX-34,magY+54);ctx.stroke();
+
+  // esfera
+  const landed=LAB.fallen>=LAB.h-1e-6;
+  const ballY=G0.ballY(LAB.fallen) - (bounce&&landed? bounceOffM*G0.ppm : 0);
+  // estroboscopía
+  if(LAB.trail && LAB.samples.length){
+    const tnow=(performance.now()-animStart)/1000*playSpeed();
+    for(const s of LAB.samples){
+      if(LAB.dropping && s.t>tnow) break;
+      if(!LAB.dropping && LAB.fallen<=0) break;
+      const yy=G0.ballY(s.y);
+      ctx.beginPath();ctx.arc(G0.cx,yy,3.4,0,7);ctx.fillStyle='rgba(120,140,160,.28)';ctx.fill();
+    }
+  }
+  const grd=ctx.createRadialGradient(G0.cx-3,ballY-4,1,G0.cx,ballY,9);
+  grd.addColorStop(0,CSS('--ball-hi'));grd.addColorStop(1,CSS('--ball'));
+  ctx.beginPath();ctx.arc(G0.cx,ballY,BALL_PX,0,7);ctx.fillStyle=grd;ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,.4)';ctx.lineWidth=1;ctx.stroke();
+  ctx.beginPath();ctx.arc(G0.cx-2.6,ballY-3,2.4,0,7);ctx.fillStyle='rgba(255,255,255,.7)';ctx.fill();
+
+  // almohadilla / sensor de impacto (ENT2)
+  ctx.fillStyle=CSS('--device'); ctx.fillRect(G0.cx-24,G0.groundY-7,48,7);
+  ctx.fillStyle=port2hot?CSS('--ok'):CSS('--metal'); ctx.fillRect(G0.cx-24,G0.groundY-9,48,3);
+  tx(ctx,'sensor de impacto · ENT 2',G0.cx+30,G0.groundY-4,CSS('--muted'),10,'left',600);
+
+  // CINTA MÉTRICA vertical (a la derecha del eje de caída) con línea roja + lupa
+  const tapeX=G0.cx+70;
+  ctx.fillStyle=CSS('--surface'); ctx.fillRect(tapeX-14,G0.top-6,26,G0.groundY-G0.top+6);
+  ctx.strokeStyle=CSS('--line'); ctx.strokeRect(tapeX-14,G0.top-6,26,G0.groundY-G0.top+6);
+  for(let cm=0;cm<=Math.floor(HMAX*100);cm+=1){
+    const yy=G0.groundY-cm/100*G0.ppm; if(yy<G0.top-6)break;
+    const major=cm%10===0, mid=cm%5===0;
+    ctx.strokeStyle=CSS('--muted');ctx.lineWidth=major?1.3:0.7;
+    ctx.beginPath();ctx.moveTo(tapeX-14,yy);ctx.lineTo(tapeX-14+(major?12:mid?8:4),yy);ctx.stroke();
+    if(major) tx(ctx,(cm/100).toFixed(1),tapeX+14,yy,CSS('--muted'),8.5,'left',600);
+  }
+  // línea roja (lectura)
+  const lineY=G0.lineY();
+  ctx.strokeStyle=CSS('--mag');ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(tapeX-20,lineY);ctx.lineTo(tapeX+40,lineY);ctx.stroke();
+  ctx.fillStyle=CSS('--mag');ctx.beginPath();ctx.moveTo(tapeX-20,lineY);ctx.lineTo(tapeX-26,lineY-4);ctx.lineTo(tapeX-26,lineY+4);ctx.closePath();ctx.fill();
+  // lupa
+  const lx=tapeX+70, ly=lineY, R=30;
+  ctx.save();ctx.beginPath();ctx.arc(lx,ly,R,0,7);ctx.closePath();ctx.clip();
+  ctx.fillStyle=CSS('--surface');ctx.fillRect(lx-R,ly-R,2*R,2*R);
+  const zoom=5;
+  for(let cm=0;cm<=Math.floor(HMAX*100);cm+=1){
+    const yy=ly+(LAB.line*100-cm)*(G0.ppm/100)*zoom; if(yy<ly-R-6||yy>ly+R+6)continue;
+    const major=cm%10===0,mid=cm%5===0;
+    ctx.strokeStyle=CSS('--muted');ctx.lineWidth=major?1.4:0.8;
+    ctx.beginPath();ctx.moveTo(lx-R,yy);ctx.lineTo(lx-R+(major?20:mid?13:7),yy);ctx.stroke();
+    if(major) txm(ctx,(cm/100).toFixed(1),lx-R+24,yy,CSS('--muted'),9);
+  }
+  ctx.strokeStyle=CSS('--mag');ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(lx-R,ly);ctx.lineTo(lx+R,ly);ctx.stroke();
+  ctx.restore();
+  ctx.strokeStyle=CSS('--metal-dark');ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(lx,ly,R,0,7);ctx.stroke();
+  txm(ctx,nf(LAB.line,3)+' m',lx,ly+R+12,CSS('--mag'),11);
+
+  // cota h (del suelo a la línea roja)
+  ctx.strokeStyle=CSS('--accent');ctx.setLineDash([4,4]);ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.moveTo(tapeX-30,lineY);ctx.lineTo(tapeX-30,G0.groundY);ctx.stroke();ctx.setLineDash([]);
+  arrow(ctx,tapeX-30,G0.groundY,tapeX-30,lineY+2,CSS('--accent'),1.4,7);
+  arrow(ctx,tapeX-30,lineY,tapeX-30,G0.groundY-2,CSS('--accent'),1.4,7);
+  ctx.save();ctx.translate(tapeX-40,(lineY+G0.groundY)/2);ctx.rotate(-Math.PI/2);
+  tx(ctx,'h = '+nf(LAB.line,3)+' m',0,0,CSS('--accent'),11.5,'center',700);ctx.restore();
+
+  tx(ctx,'⇕ arrastre el electroimán o la línea roja',8,h-10,CSS('--muted'),10.5,'left',600);
+});
+
+/* interacción de arrastre en la escena */
+(function(){
+  const c=scene.c;
+  const hit=(x,y)=>{ const G0=sceneGeom(scene.w,scene.h);
+    if(Math.abs(y-G0.magY())<16 && Math.abs(x-G0.cx)<60) return 'mag';
+    const tapeX=G0.cx+70; if(Math.abs(y-G0.lineY())<12 && x>tapeX-30 && x<tapeX+110) return 'line';
+    return null; };
+  const down=e=>{ if(LAB.dropping)return; const p=ptr(c,e); dragTarget=hit(p.x,p.y); if(dragTarget){e.preventDefault();} };
+  const move=e=>{ if(!dragTarget||LAB.dropping)return; e.preventDefault(); const p=ptr(c,e); const G0=sceneGeom(scene.w,scene.h);
+    const hv=clamp(G0.hAtY(p.y),0.30,1.80);
+    if(dragTarget==='mag'){ LAB.h=hv; LAB.line=hv; }
+    else { LAB.line=hv; }
+    refreshLabControls(); scene.render(); };
+  const up=()=>{ if(dragTarget){ save(); } dragTarget=null; };
+  c.addEventListener('mousedown',down); c.addEventListener('touchstart',down,{passive:false});
+  window.addEventListener('mousemove',move); window.addEventListener('touchmove',move,{passive:false});
+  window.addEventListener('mouseup',up); window.addEventListener('touchend',up);
+})();
+
+function playSpeed(){ return 0.55; }   // cámara lenta para visualizar la caída
+let port1hot=false, port2hot=false;
+
+function refreshLabControls(){
+  $('#rngH').value=LAB.h.toFixed(3);
+  $('#outH').textContent=nf(LAB.h,3)+' m';
+  $('#hudH').innerHTML=`<i data-lucide="ruler"></i>h = ${nf(LAB.line,3)} m`;
+  $('#hudDrag').innerHTML=`<i data-lucide="wind"></i>Arrastre: ${LAB.drag?'on':'off'}`;
+  $('#chkDrag').checked=LAB.drag; $('#chkTrail').checked=LAB.trail;
+  const key=roundKey(LAB.line); const row=S.rows.find(r=>r.key===key);
+  const n=row?row.reps.length:0;
+  $('#repInfo').innerHTML=`Repeticiones anotadas a <b>${nf(LAB.line,3)} m</b>: ${n} / 3.`;
+  ic();
+}
+function setState(txt,ico){ $('#hudState').innerHTML=`<i data-lucide="${ico}"></i>${txt}`; ic(); }
+
+function drop(){
+  if(LAB.dropping) return;
+  LAB.line=LAB.h;                              // al soltar, la referencia es la altura del imán
+  const sim=simulateFall(LAB.h, LAB.drag);
+  LAB.samples=sim.samples;
+  // tiempo medido: tiempo verdadero + sesgo de liberación + ruido del cronómetro
+  const bias=0.0018, noise=(gauss()*0.0013);
+  LAB._tTrue=sim.t; LAB._tMeas=Math.max(0, sim.t+bias+noise);
+  stopBounce(); LAB.dropping=true; LAB.recorded=false; LAB.fallen=0;
+  animStart=performance.now(); animDur=sim.t/playSpeed()*1000;
+  port1hot=true; port2hot=false; updatePorts();
+  $('#lcd').classList.remove('off'); $('#lcdSub').textContent='s · midiendo…';
+  setState('Cayendo…','circle-dot');
+  $('#btnDrop').disabled=true; $('#btnRec').disabled=true;
+  $('#btnDrop').innerHTML='<i data-lucide="loader"></i>Cayendo…'; ic();
+  requestAnimationFrame(animFall);
+}
+function animFall(now){
+  const G0=sceneGeom(scene.w,scene.h);
+  let el=(now-animStart)/1000*playSpeed();           // tiempo simulado transcurrido
+  if(el>=LAB._tTrue){ el=LAB._tTrue; }
+  // posición por interpolación en samples
+  const s=LAB.samples; let y=0;
+  for(let i=1;i<s.length;i++){ if(s[i].t>=el){ const a=s[i-1],b=s[i],f=(el-a.t)/Math.max(b.t-a.t,1e-9); y=a.y+(b.y-a.y)*f; break; } y=s[i].y; }
+  LAB.fallen=y;
+  $('#lcdBig').textContent=(el).toFixed(4).replace('.',',').padStart(6,' ');
+  scene.render();
+  if(el<LAB._tTrue){ requestAnimationFrame(animFall); }
+  else { endDrop(); }
+}
+function endDrop(){
+  LAB.dropping=false; LAB.fallen=LAB.h;
+  port2hot=true; updatePorts();
+  $('#lcdBig').textContent=nf(LAB._tMeas,4);
+  $('#lcdSub').textContent='s · tiempo de caída';
+  setState('Impacto registrado','check-circle-2');
+  LAB.lastT=LAB._tMeas; LAB.lastH=LAB.line;
+  $('#btnDrop').disabled=false; $('#btnDrop').innerHTML='<i data-lucide="arrow-down-to-line"></i>Soltar';
+  $('#btnRec').disabled=false;
+  $('#recMsg').innerHTML=`Caída válida: h = <b>${nf(LAB.line,3)} m</b>, t = <b>${nf(LAB._tMeas,4)} s</b>. Pulse <b>Anotar</b> para registrarla.`;
+  scene.render(); ic(); save();
+  startBounce();
+}
+/* Rebote visual: parábolas sucesivas con coeficiente de restitución e = 0.3 (esfera de acero sobre la almohadilla),
+   en la misma cámara lenta de la caída. Solo es estético: el tiempo ya se midió en el impacto. */
+const REST=0.3;
+function startBounce(){ bounce={t0:performance.now(), v:REST*Math.sqrt(2*9.78*LAB.h)}; bounceOffM=0; requestAnimationFrame(animBounce); }
+function bounceHeight(t){ let v=bounce.v, tt=t; while(v>0.04){ const T=2*v/9.78; if(tt<T) return v*tt-0.5*9.78*tt*tt; tt-=T; v*=REST; } return null; }
+function animBounce(now){ if(!bounce) return; const y=bounceHeight((now-bounce.t0)/1000*playSpeed());
+  if(y==null){ bounce=null; bounceOffM=0; scene.render(); return; }
+  bounceOffM=Math.max(0,y); scene.render(); requestAnimationFrame(animBounce); }
+function stopBounce(){ bounce=null; bounceOffM=0; }
+function resetBall(){ if(LAB.dropping)return; stopBounce(); LAB.fallen=0; LAB.samples=[]; port1hot=port2hot=false; updatePorts();
+  $('#lcd').classList.add('off'); $('#lcdBig').textContent='0.0000'; $('#lcdSub').textContent='s · listo';
+  setState('Listo','circle-pause'); LAB.lastT=null; LAB.recorded=true; $('#btnRec').disabled=true;
+  $('#recMsg').innerHTML='<i data-lucide="pencil-ruler"></i> Suelte la esfera para habilitar el registro.'; ic(); scene.render(); }
+function updatePorts(){ $('#port1').classList.toggle('hot',port1hot); $('#port2').classList.toggle('hot',port2hot); }
+function gauss(){ let u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+
+/* registro (Anotar) */
+function roundKey(h){ return Math.round(h*100); }   // agrupa por cm
+function anotar(){
+  if(LAB.lastT==null){ toast('No hay una caída válida para anotar. Pulse <b>Soltar</b> primero.','warn'); return; }
+  if(LAB.recorded){ toast('Esa caída ya fue anotada. Suelte de nuevo para otra repetición.','warn'); return; }
+  const key=roundKey(LAB.lastH);
+  let row=S.rows.find(r=>r.key===key);
+  if(!row){ if(S.rows.length>=8){ toast('Máximo 8 alturas distintas. Vacíe o use las existentes.','warn'); return; }
+    row={key, reps:[], manual:false}; S.rows.push(row); S.rows.sort((a,b)=>a.key-b.key); }
+  if(row.reps.length>=6){ toast('Ya hay 6 repeticiones en esta altura.','warn'); return; }
+  row.reps.push({h:LAB.lastH, t:LAB.lastT});
+  LAB.recorded=true; $('#btnRec').disabled=true;
+  const n=row.reps.length;
+  toast(`Anotado: h = <b>${nf(LAB.lastH,3)} m</b>, t = <b>${nf(LAB.lastT,4)} s</b> (repetición ${n}).`, n>=3?'ok':'info');
+  refreshLabControls(); save(); markDirty();
+}
+function markDirty(){ renderData(); if(S.tab==='analisis') renderAnalysis(); if(S.tab==='taller') buildTaller(); if(S.tab==='informe') renderReport(); }
+
+/* listeners laboratorio */
+$('#rngH').addEventListener('input',e=>{ if(LAB.dropping)return; stopBounce(); LAB.h=+e.target.value; LAB.line=LAB.h; LAB.fallen=0; refreshLabControls(); scene.render(); });
+$('#rngH').addEventListener('change',save);
+$('#chkDrag').addEventListener('change',e=>{ LAB.drag=e.target.checked; refreshLabControls(); save(); });
+$('#chkTrail').addEventListener('change',e=>{ LAB.trail=e.target.checked; save(); scene.render(); });
+$('#btnDrop').addEventListener('click',drop);
+$('#btnReset').addEventListener('click',resetBall);
+$('#btnRec').addEventListener('click',anotar);
+
+/* ============================================================================
+   DATOS · tabla + estadísticos
+   ========================================================================== */
+function rowStats(r){
+  const ts=r.reps.map(x=>x.t), hs=r.reps.map(x=>x.h);
+  const tb=ts.reduce((a,b)=>a+b,0)/ts.length;
+  const hb=hs.reduce((a,b)=>a+b,0)/hs.length;
+  const sdt= ts.length>1? Math.sqrt(ts.reduce((a,b)=>a+(b-tb)**2,0)/(ts.length-1)) : 0;
+  return {tb,hb,sdt,X:tb*tb,Y:hb,n:ts.length};
+}
+function maxReps(){ return S.rows.reduce((m,r)=>Math.max(m,r.reps.length),3); }
+function renderData(){
+  const has=S.rows.length>0;
+  $('#rawEmpty').hidden=has; $('#dataWrap').hidden=!has;
+  $('#btnManual').innerHTML = S.manualEdit?'<i data-lucide="lock"></i>Fijar datos':'<i data-lucide="pencil"></i>Edición manual';
+  $('#editNote').innerHTML = S.manualEdit? '<b style="color:var(--warn)">Edición manual activada</b> (opciones docentes): puede ajustar h y los tiempos. Las celdas tocadas quedan marcadas.' : 'Los datos entran con el botón <b>Anotar</b> del laboratorio. Los promedios se calculan solos.';
+  if(!has){ $('#dataStats').innerHTML=''; ic(); return; }
+  const mr=maxReps();
+  let th=`<thead><tr><th>#</th><th>h̄ (m)</th>`;
+  for(let i=0;i<mr;i++) th+=`<th>t<sub>${i+1}</sub> (s)</th>`;
+  th+=`<th>t̄ (s)</th><th>σ<sub>t</sub> (s)</th><th>X = t̄² (s²)</th><th>Y = h̄ (m)</th>${S.manualEdit?'<th></th>':''}</tr></thead>`;
+  let tb='<tbody>';
+  S.rows.forEach((r,ri)=>{
+    const st=rowStats(r);
+    tb+=`<tr><td>${ri+1}</td>`;
+    tb+= S.manualEdit? `<td><input data-r="${ri}" data-k="h" value="${nf(st.hb,3)}"></td>` : `<td class="mono">${nf(st.hb,3)}</td>`;
+    for(let i=0;i<mr;i++){ const v=r.reps[i];
+      if(S.manualEdit) tb+=`<td>${v?`<input data-r="${ri}" data-k="t" data-i="${i}" value="${nf(v.t,4)}">`:`<input data-r="${ri}" data-k="t" data-i="${i}" value="" placeholder="—">`}</td>`;
+      else tb+=`<td class="mono ${r.manual?'edited':''}">${v?nf(v.t,4):'—'}</td>`;
+    }
+    tb+=`<td class="calc">${nf(st.tb,4)}</td><td class="calc">${nf(st.sdt,4)}</td><td class="calc">${nf(st.X,4)}</td><td class="calc">${nf(st.Y,3)}</td>`;
+    if(S.manualEdit) tb+=`<td><button class="del btn-sm" data-del="${ri}" title="Eliminar fila"><i data-lucide="x"></i></button></td>`;
+    tb+='</tr>';
+  });
+  tb+='</tbody>';
+  $('#dataTbl').innerHTML=th+tb;
+  // estadísticos globales
+  const reg=regression();
+  $('#dataStats').innerHTML=[
+    ['Alturas registradas',S.rows.length,'filas'],
+    ['Mediciones totales',S.rows.reduce((a,r)=>a+r.reps.length,0),'tiempos'],
+    ['Rango de h',`${nf(Math.min(...S.rows.map(r=>rowStats(r).hb)),2)}–${nf(Math.max(...S.rows.map(r=>rowStats(r).hb)),2)}`,'m'],
+    ['g preliminar',reg?nf(reg.g,3):'—','m/s² (= 2m)']
+  ].map(s=>`<div class="stat"><b>${s[1]}</b><small>${s[0]} · ${s[2]}</small></div>`).join('');
+  if(S.manualEdit) bindManual();
+  ic();
+}
+function bindManual(){
+  $$('#dataTbl input').forEach(inp=>{ inp.addEventListener('change',()=>{
+    const ri=+inp.dataset.r, r=S.rows[ri]; const val=parseFloat(inp.value.replace(',','.'));
+    if(inp.dataset.k==='h'){ if(isFinite(val)) r.reps.forEach(rp=>rp.h=val); }
+    else { const i=+inp.dataset.i; if(isFinite(val)){ if(r.reps[i]) r.reps[i].t=val; else r.reps[i]={h:rowStats(r).hb,t:val}; } else if(r.reps[i]) r.reps.splice(i,1); }
+    r.manual=true; save(); renderData(); if(S.tab==='analisis')renderAnalysis();
+  }); });
+  $$('#dataTbl [data-del]').forEach(b=>b.addEventListener('click',()=>{ S.rows.splice(+b.dataset.del,1); save(); renderData(); if(S.tab==='analisis')renderAnalysis(); }));
+}
+function csv(){
+  const mr=maxReps(); let head=['h_prom(m)']; for(let i=0;i<mr;i++)head.push('t'+(i+1)+'(s)'); head.push('t_prom(s)','sigma_t(s)','X=t2(s2)','Y=h(m)');
+  const lines=[head.join(',')];
+  S.rows.forEach(r=>{ const st=rowStats(r); const row=[nf(st.hb,4)];
+    for(let i=0;i<mr;i++)row.push(r.reps[i]?nf(r.reps[i].t,4):''); row.push(nf(st.tb,4),nf(st.sdt,4),nf(st.X,5),nf(st.Y,4)); lines.push(row.join(',')); });
+  return lines.join('\n');
+}
+$('#btnCsv').onclick=()=>{ if(!S.rows.length){toast('No hay datos.','warn');return;} navigator.clipboard?.writeText(csv()).then(()=>toast('CSV copiado al portapapeles.','ok'),()=>toast('No se pudo copiar.','bad')); };
+$('#btnDownCsv').onclick=()=>{ if(!S.rows.length){toast('No hay datos.','warn');return;} const b=new Blob([csv()],{type:'text/csv'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download='caida_libre_datos.csv'; a.click(); URL.revokeObjectURL(u); };
+$('#btnManual').onclick=()=>{ S.manualEdit=!S.manualEdit; save(); renderData(); };
+$('#btnClear').onclick=()=>{ if(!S.rows.length)return; if(!$('#btnClear').dataset.armed){ $('#btnClear').dataset.armed='1'; toast('Pulse <b>Vaciar</b> otra vez para borrar todas las mediciones.','warn'); setTimeout(()=>delete $('#btnClear').dataset.armed,4000); return; } S.rows=[]; S.taller.graded=null; save(); markDirty(); refreshLabControls(); toast('Mediciones eliminadas.','ok'); };
+
+/* ============================================================================
+   REGRESIÓN por mínimos cuadrados  (Y = m X + b)
+   ========================================================================== */
+function regression(){
+  const pts=S.rows.filter(r=>r.reps.length>0).map(r=>{const st=rowStats(r);return {X:st.X,Y:st.Y};});
+  if(pts.length<2) return null;
+  const n=pts.length; let sx=0,sy=0,sxx=0,sxy=0,syy=0;
+  pts.forEach(p=>{sx+=p.X;sy+=p.Y;sxx+=p.X*p.X;sxy+=p.X*p.Y;syy+=p.Y*p.Y;});
+  const d=n*sxx-sx*sx; if(Math.abs(d)<1e-12) return null;
+  const m=(n*sxy-sx*sy)/d, b=(sy*sx*0 + (sy-m*sx)/n);
+  const b2=(sy-m*sx)/n;
+  // R²
+  const ybar=sy/n; let ssr=0,sst=0; pts.forEach(p=>{const f=m*p.X+b2; ssr+=(p.Y-f)**2; sst+=(p.Y-ybar)**2;});
+  const r2= sst>0? 1-ssr/sst : 1;
+  // incertidumbres de la pendiente/intercepto
+  const s2= n>2? ssr/(n-2) : 0;
+  const sm= Math.sqrt(s2*n/d), sb=Math.sqrt(s2*sxx/d);
+  const g=2*m, sg=2*sm, gref=G, err=Math.abs(g-gref)/gref*100;
+  return {m,b:b2,r2,sm,sb,g,sg,err,n,pts};
+}
+
+/* ============================================================================
+   GRAFICADOR estilo GeoGebra (motor nativo Canvas)
+   ========================================================================== */
+function Plotter(id){
+  const self=this; this.id=id; this.view=null; this.series=[]; this.hidden={}; this.xlabel='x'; this.ylabel='y';
+  const o=setupCanvas(id,(ctx,w,h)=>self.draw(ctx,w,h));
+  this.o=o;
+  this.pad={l:56,r:16,t:16,b:40};
+  this.sx=X=>{const v=this.view;return this.pad.l+(X-v.x0)/(v.x1-v.x0)*(this.o.w-this.pad.l-this.pad.r);};
+  this.sy=Y=>{const v=this.view;return this.pad.t+(1-(Y-v.y0)/(v.y1-v.y0))*(this.o.h-this.pad.t-this.pad.b);};
+  this.wx=px=>{const v=this.view;return v.x0+(px-this.pad.l)/(this.o.w-this.pad.l-this.pad.r)*(v.x1-v.x0);};
+  this.wy=py=>{const v=this.view;return v.y0+(1-(py-this.pad.t)/(this.o.h-this.pad.t-this.pad.b))*(v.y1-v.y0);};
+  // interacción
+  let dragging=false,last=null;
+  const c=o.c;
+  c.addEventListener('mousedown',e=>{dragging=true;last=ptr(c,e);});
+  c.addEventListener('touchstart',e=>{dragging=true;last=ptr(c,e);},{passive:true});
+  window.addEventListener('mousemove',e=>{ hover(e); if(!dragging||!self.view)return; const p=ptr(c,e); pan(p); last=p;});
+  window.addEventListener('touchmove',e=>{ if(!dragging||!self.view)return; const p=ptr(c,e); pan(p); last=p;},{passive:true});
+  window.addEventListener('mouseup',()=>dragging=false); window.addEventListener('touchend',()=>dragging=false);
+  c.addEventListener('wheel',e=>{ if(!self.view)return; e.preventDefault(); const p=ptr(c,e); const f=e.deltaY<0?0.86:1.16; zoomAt(p,f); },{passive:false});
+  c.addEventListener('dblclick',()=>self.fit());
+  function pan(p){ if(!last)return; const v=self.view; const dx=(p.x-last.x)/(o.w-self.pad.l-self.pad.r)*(v.x1-v.x0); const dy=(p.y-last.y)/(o.h-self.pad.t-self.pad.b)*(v.y1-v.y0); v.x0-=dx;v.x1-=dx;v.y0+=dy;v.y1+=dy; o.render(); }
+  function zoomAt(p,f){ const v=self.view; const wx=self.wx(p.x),wy=self.wy(p.y); v.x0=wx+(v.x0-wx)*f; v.x1=wx+(v.x1-wx)*f; v.y0=wy+(v.y0-wy)*f; v.y1=wy+(v.y1-wy)*f; o.render(); }
+  this.zoom=f=>{ if(!self.view)return; const cx=(self.view.x0+self.view.x1)/2; zoomAt({x:self.sx(cx),y:self.sy((self.view.y0+self.view.y1)/2)},f); };
+  function hover(e){ const tip=$('#plotTip'); if(!self.view){tip.hidden=true;return;}
+    const r=c.getBoundingClientRect(); if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom){tip.hidden=true;return;}
+    const p=ptr(c,e); let best=null,bd=16;
+    self.series.filter(s=>s.type==='points'&&!self.hidden[s.name]).forEach(s=>s.data.forEach(pt=>{const d=Math.hypot(self.sx(pt.x)-p.x,self.sy(pt.y)-p.y); if(d<bd){bd=d;best={s,pt};}}));
+    if(best){ tip.hidden=false; tip.style.left=(p.x+14)+'px'; tip.style.top=(p.y+10)+'px';
+      tip.innerHTML=`<b>${esc(best.s.name)}</b><br>${esc(self.xlabel)} = ${nf(best.pt.x,4)}<br>${esc(self.ylabel)} = ${nf(best.pt.y,4)}${best.pt.lbl?'<br>'+esc(best.pt.lbl):''}`;
+    } else tip.hidden=true;
+  }
+}
+Plotter.prototype.fit=function(){
+  let xs=[],ys=[];
+  this.series.forEach(s=>{ if(this.hidden[s.name])return;
+    if(s.type==='points') s.data.forEach(p=>{xs.push(p.x);ys.push(p.y);});
+    if(s.type==='fit'){ /* se extiende con los puntos */ }
+  });
+  if(!xs.length){ this.view={x0:0,x1:1,y0:0,y1:1}; this.o.render(); return; }
+  let x0=Math.min(0,...xs),x1=Math.max(...xs),y0=Math.min(0,...ys),y1=Math.max(...ys);
+  const dx=(x1-x0)||1,dy=(y1-y0)||1;
+  this.view={x0:x0-dx*0.08,x1:x1+dx*0.12,y0:y0-dy*0.08,y1:y1+dy*0.14};
+  this.o.render();
+};
+function niceStep(range,target){ const raw=range/target; const p=Math.pow(10,Math.floor(Math.log10(raw))); const n=raw/p; let s; if(n<1.5)s=1;else if(n<3)s=2;else if(n<7)s=5;else s=10; return s*p; }
+Plotter.prototype.draw=function(ctx,w,h){
+  ctx.clearRect(0,0,w,h); if(!this.view) this.fit(); const v=this.view;
+  ctx.fillStyle=CSS('--surface'); ctx.fillRect(0,0,w,h);
+  const L=this.pad.l,R=w-this.pad.r,T=this.pad.t,B=h-this.pad.b;
+  ctx.save();ctx.beginPath();ctx.rect(L,T,R-L,B-T);ctx.clip();
+  const stepX=niceStep(v.x1-v.x0,7), stepY=niceStep(v.y1-v.y0,6);
+  // rejilla menor
+  ctx.strokeStyle=CSS('--grid-minor');ctx.lineWidth=1;
+  for(let x=Math.ceil(v.x0/(stepX/5))*(stepX/5);x<=v.x1;x+=stepX/5){const px=this.sx(x);ctx.beginPath();ctx.moveTo(px,T);ctx.lineTo(px,B);ctx.stroke();}
+  for(let y=Math.ceil(v.y0/(stepY/5))*(stepY/5);y<=v.y1;y+=stepY/5){const py=this.sy(y);ctx.beginPath();ctx.moveTo(L,py);ctx.lineTo(R,py);ctx.stroke();}
+  // rejilla mayor
+  ctx.strokeStyle=CSS('--grid-major');ctx.lineWidth=1;
+  for(let x=Math.ceil(v.x0/stepX)*stepX;x<=v.x1;x+=stepX){const px=this.sx(x);ctx.beginPath();ctx.moveTo(px,T);ctx.lineTo(px,B);ctx.stroke();}
+  for(let y=Math.ceil(v.y0/stepY)*stepY;y<=v.y1;y+=stepY){const py=this.sy(y);ctx.beginPath();ctx.moveTo(L,py);ctx.lineTo(R,py);ctx.stroke();}
+  ctx.restore();
+  // series: curvas/rectas primero
+  this.series.forEach(s=>{ if(this.hidden[s.name])return;
+    if(s.type==='fit'||s.type==='func'){
+      ctx.save();ctx.beginPath();ctx.rect(L,T,R-L,B-T);ctx.clip();
+      ctx.strokeStyle=s.color;ctx.lineWidth=s.width||2.2; if(s.dash)ctx.setLineDash(s.dash);
+      ctx.beginPath(); let started=false;
+      const N=160;
+      for(let i=0;i<=N;i++){ const X=v.x0+(v.x1-v.x0)*i/N; const Y=s.type==='fit'?(s.m*X+s.b):s.f(X); const px=this.sx(X),py=this.sy(Y); if(!started){ctx.moveTo(px,py);started=true;}else ctx.lineTo(px,py); }
+      ctx.stroke();ctx.setLineDash([]);ctx.restore();
+    }
+  });
+  // ejes
+  const axX = (0>=v.y0&&0<=v.y1)? this.sy(0): B;
+  const axY = (0>=v.x0&&0<=v.x1)? this.sx(0): L;
+  ctx.strokeStyle=CSS('--axis');ctx.lineWidth=1.4;
+  ctx.beginPath();ctx.moveTo(L,axX);ctx.lineTo(R,axX);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(axY,B);ctx.lineTo(axY,T);ctx.stroke();
+  arrow(ctx,R-14,axX,R,axX,CSS('--axis'),1.4,8);
+  arrow(ctx,axY,T+14,axY,T,CSS('--axis'),1.4,8);
+  // marcas + números
+  ctx.fillStyle=CSS('--muted');
+  for(let x=Math.ceil(v.x0/stepX)*stepX;x<=v.x1;x+=stepX){ if(Math.abs(x)<stepX/1e6)continue; const px=this.sx(x); ctx.strokeStyle=CSS('--axis');ctx.beginPath();ctx.moveTo(px,axX-3);ctx.lineTo(px,axX+3);ctx.stroke();
+    txm(ctx,fmtTick(x,stepX),px,clamp(axX+11,T+8,B+11),CSS('--muted'),9.5); }
+  for(let y=Math.ceil(v.y0/stepY)*stepY;y<=v.y1;y+=stepY){ if(Math.abs(y)<stepY/1e6)continue; const py=this.sy(y); ctx.strokeStyle=CSS('--axis');ctx.beginPath();ctx.moveTo(axY-3,py);ctx.lineTo(axY+3,py);ctx.stroke();
+    ctx.save();ctx.font=`500 9.5px ${CSS('--f-mono')}`;ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillStyle=CSS('--muted');ctx.fillText(fmtTick(y,stepY),clamp(axY-6,L-2,R),py);ctx.restore(); }
+  // etiquetas de ejes
+  tx(ctx,this.xlabel,R-4,axX-10,CSS('--ink'),12,'right',700);
+  ctx.save();ctx.translate(axY+12,T+6);tx(ctx,this.ylabel,0,0,CSS('--ink'),12,'left',700);ctx.restore();
+  // puntos
+  this.series.forEach(s=>{ if(this.hidden[s.name]||s.type!=='points')return;
+    ctx.save();ctx.beginPath();ctx.rect(L-4,T-4,R-L+8,B-T+8);ctx.clip();
+    s.data.forEach(p=>{ const px=this.sx(p.x),py=this.sy(p.y);
+      if(p.ex){ ctx.strokeStyle=s.color;ctx.lineWidth=1; const e=p.ex*(this.sx(1)-this.sx(0)); ctx.beginPath();ctx.moveTo(px-e,py);ctx.lineTo(px+e,py);ctx.stroke(); }
+      ctx.beginPath();ctx.arc(px,py,s.r||4.5,0,7);ctx.fillStyle=s.color;ctx.fill();ctx.strokeStyle=CSS('--surface');ctx.lineWidth=1.5;ctx.stroke(); });
+    ctx.restore();
+  });
+};
+function fmtTick(v,step){ const d=Math.max(0,-Math.floor(Math.log10(step))+1); const s=Math.abs(v)>=1e4||(Math.abs(v)<1e-3&&v!==0)? v.toExponential(1): v.toFixed(Math.min(d,4)); return s.replace('.',','); }
+Plotter.prototype.renderLegend=function(hostId){
+  const host=$(hostId); if(!host)return;
+  host.innerHTML=this.series.map(s=>`<div class="it ${this.hidden[s.name]?'off':''}" data-n="${esc(s.name)}"><span class="sw ${s.type==='points'?'pt':''}" style="background:${s.color}"></span><span>${esc(s.name)}</span></div>`).join('');
+  $$('.it',host).forEach(it=>it.onclick=()=>{ const n=it.dataset.n; this.hidden[n]=!this.hidden[n]; this.o.render(); this.renderLegend(hostId); });
+};
+
+/* ============================================================================
+   ANÁLISIS
+   ========================================================================== */
+let plot, curPlot='lin';
+function renderAnalysis(){
+  if(!plot) plot=new Plotter('plot');
+  const reg=regression();
+  const enough=S.rows.filter(r=>r.reps.length>0).length>=2;
+  $('#anEmpty').hidden=enough; $('#anResults').hidden=!enough;
+  plot.series=[]; plot.hidden={};
+  const dataPts=S.rows.filter(r=>r.reps.length>0).map(r=>rowStats(r));
+  const col={data:CSS('--accent'),fit:CSS('--bad'),ref:CSS('--ok'),drag:CSS('--warn')};
+  if(curPlot==='lin'){
+    plot.xlabel='X = t²  (s²)'; plot.ylabel='Y = h  (m)';
+    plot.series.push({type:'points',name:'Datos (t̄², h̄)',color:col.data,data:dataPts.map(d=>({x:d.X,y:d.Y,lbl:'n='+d.n}))});
+    if(reg){ plot.series.push({type:'fit',name:`Ajuste  g = ${nf(reg.g,2)} m/s²`,color:col.fit,m:reg.m,b:reg.b,width:2.4}); }
+    plot.series.push({type:'fit',name:`Referencia  g = ${GREF_LABEL}`,color:col.ref,m:G/2,b:0,dash:[6,4],width:1.8});
+  } else if(curPlot==='ht'){
+    plot.xlabel='t  (s)'; plot.ylabel='h  (m)';
+    plot.series.push({type:'points',name:'Datos (t̄, h̄)',color:col.data,data:dataPts.map(d=>({x:d.tb,y:d.Y}))});
+    const gE=reg?reg.g:G;
+    plot.series.push({type:'func',name:`Modelo ideal  h=½·${nf(gE,2)}·t²`,color:col.fit,f:t=>0.5*gE*t*t,width:2.2});
+    plot.series.push({type:'func',name:`h=½·9,78·t²`,color:col.ref,f:t=>0.5*G*t*t,dash:[6,4],width:1.6});
+  } else {
+    plot.xlabel='t  (s)'; plot.ylabel='v = 2h/t  (m/s)';
+    plot.series.push({type:'points',name:'v final = 2h̄/t̄',color:col.data,data:dataPts.map(d=>({x:d.tb,y:2*d.Y/d.tb}))});
+    const gE=reg?reg.g:G;
+    plot.series.push({type:'func',name:`v = ${nf(gE,2)}·t (ajuste)`,color:col.fit,f:t=>gE*t,width:2.2});
+    plot.series.push({type:'func',name:'v = 9,78·t',color:col.ref,f:t=>G*t,dash:[6,4],width:1.6});
+  }
+  plot.fit(); plot.renderLegend('#plotLegend');
+  // resultados
+  if(reg){
+    $('#regStats').innerHTML=[
+      ['Pendiente m',`${nf(reg.m,4)}`,'m/s² (= g/2)'],
+      ['Intercepto b',`${nf(reg.b,4)}`,'m'],
+      ['g experimental',`${nf(reg.g,3)}`,`± ${nf(reg.sg,3)} m/s²`],
+      ['Coef. R²',`${nf(reg.r2,5)}`,'ajuste lineal'],
+      ['Error vs 9,78',`${nf(reg.err,2)} %`,'|Δg|/g_ref'],
+      ['σ de la pendiente',`${nf(reg.sm,4)}`,'m/s²']
+    ].map(s=>`<div class="stat"><b>${s[1]}</b><small>${s[0]} · ${s[2]}</small></div>`).join('');
+    const good=reg.r2>=0.997&&reg.err<=3;
+    const v=$('#regVerdict'); v.className='msg '+(good?'msg-ok':reg.err<=6?'msg-warn':'msg-bad');
+    v.innerHTML=`<i data-lucide="${good?'check-circle-2':'alert-triangle'}"></i><p>Con ${reg.n} alturas, el ajuste da
+      <b>g = ${nf(reg.g,3)} ± ${nf(reg.sg,3)} m/s²</b> (R² = ${nf(reg.r2,5)}), un error del <b>${nf(reg.err,2)} %</b> frente a
+      ${GREF_LABEL}. ${good?'Excelente concordancia con el valor local de Pereira.':reg.err<=6?'Concordancia aceptable; sume más alturas o repeticiones y verifique las lecturas.':'Revise los datos: dispersión alta o alturas insuficientes.'}
+      El intercepto b = ${nf(reg.b,4)} m ${Math.abs(reg.b)<0.02?'es prácticamente nulo, como predice el modelo (v₀ = 0).':'se aleja de 0: indica un sesgo sistemático de disparo/medición.'}</p>`;
+  }
+  ic();
+}
+$$('.subtab').forEach(b=>b.onclick=()=>{ $$('.subtab').forEach(x=>x.setAttribute('aria-selected','false')); b.setAttribute('aria-selected','true'); curPlot=b.dataset.plot; renderAnalysis(); });
+$('#plotFit').onclick=()=>plot&&plot.fit();
+$('#plotIn').onclick=()=>plot&&plot.zoom(0.8);
+$('#plotOut').onclick=()=>plot&&plot.zoom(1.25);
+
+/* ============================================================================
+   INFORME
+   ========================================================================== */
+function syncStudent(){ S.student.name=$('#stName').value; S.student.group=$('#stGroup').value; S.student.prof=$('#stProf').value; S.student.date=$('#stDate').value; save(); if(S.tab==='informe')renderReport(); }
+['stName','stGroup','stProf','stDate'].forEach(id=>$('#'+id).addEventListener('input',syncStudent));
+function renderReport(){
+  const st=S.student; const reg=regression(); const mr=maxReps();
+  let rows='';
+  S.rows.forEach((r,i)=>{ const s=rowStats(r); let tt=''; for(let k=0;k<mr;k++)tt+=`<td>${r.reps[k]?nf(r.reps[k].t,4):'—'}</td>`;
+    rows+=`<tr><td>${i+1}</td><td>${nf(s.hb,3)}</td>${tt}<td>${nf(s.tb,4)}</td><td>${nf(s.X,4)}</td><td>${nf(s.Y,3)}</td></tr>`; });
+  let th=''; for(let k=0;k<mr;k++)th+=`<th>t${k+1}</th>`;
+  const concl = reg? `g<sub>exp</sub> = <b>${nf(reg.g,3)} ± ${nf(reg.sg,3)} m/s²</b> (R² = ${nf(reg.r2,5)}; error ${nf(reg.err,2)} % frente a ${GREF_LABEL}).` : 'Datos insuficientes para la regresión.';
+  $('#reportHost').innerHTML=`<div class="paper" id="paper">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #111;padding-bottom:.4rem;margin-bottom:.7rem">
+      <div><div style="font-family:var(--f-display);font-weight:700;font-size:15px">UNIVERSIDAD TECNOLÓGICA DE PEREIRA</div>
+      <div style="font-size:12px">Departamento de Física · Laboratorio de Física I</div></div>
+      <div style="font-size:12px;text-align:right">${esc(st.date||'')}</div></div>
+    <h2 style="font-size:17px;text-align:center;margin:.2rem 0 .6rem">Informe de laboratorio · Caída libre</h2>
+    <div class="hdr"><div><b>Estudiante(s):</b> ${esc(st.name)||'&nbsp;'}</div><div><b>Grupo:</b> ${esc(st.group)||'&nbsp;'}</div>
+      <div><b>Docente:</b> ${esc(st.prof)||'&nbsp;'}</div><div><b>Práctica:</b> Determinación de g</div></div>
+    <h3 style="font-size:14px;margin:.7rem 0 .2rem">1. Objetivo</h3>
+    <p style="font-size:12.5px;margin:.2rem 0">Determinar experimentalmente la aceleración de la gravedad en Pereira midiendo el tiempo de caída de una esfera para distintas alturas y linealizando h = ½gt² (Y = h, X = t², g = 2m).</p>
+    <h3 style="font-size:14px;margin:.7rem 0 .2rem">2. Datos experimentales</h3>
+    <table><thead><tr><th>#</th><th>h̄ (m)</th>${th}<th>t̄ (s)</th><th>X=t̄² (s²)</th><th>Y=h̄ (m)</th></tr></thead><tbody>${rows||'<tr><td colspan="9">Sin datos</td></tr>'}</tbody></table>
+    <h3 style="font-size:14px;margin:.7rem 0 .2rem">3. Análisis y resultados</h3>
+    <p style="font-size:12.5px;margin:.2rem 0">Por mínimos cuadrados sobre (X, Y): pendiente m = ${reg?nf(reg.m,4):'—'} m/s², intercepto b = ${reg?nf(reg.b,4):'—'} m.
+    Como g = 2m: ${concl}</p>
+    ${reg?`<table><tr><th>m (s²→m)</th><th>b (m)</th><th>R²</th><th>g = 2m (m/s²)</th><th>σ_g (m/s²)</th><th>Error (%)</th></tr>
+      <tr><td>${nf(reg.m,4)}</td><td>${nf(reg.b,4)}</td><td>${nf(reg.r2,5)}</td><td>${nf(reg.g,3)}</td><td>${nf(reg.sg,3)}</td><td>${nf(reg.err,2)}</td></tr></table>`:''}
+    <h3 style="font-size:14px;margin:.7rem 0 .2rem">4. Conclusión</h3>
+    <p style="font-size:12.5px;margin:.2rem 0">${reg?(reg.err<=3?'El valor experimental concuerda con el valor local de referencia dentro del error esperado, validando el modelo de caída libre con aceleración constante.':'El valor obtenido presenta una desviación que se atribuye a la resolución del cronómetro, retardos de liberación y, en alturas mayores, al arrastre del aire.'):'Complete las mediciones para concluir.'}</p>
+    <div class="sig"><div>Firma estudiante(s)</div><div>Firma docente</div></div>
+  </div>`;
+  safeTypeset($('#reportHost'));
+}
+$('#btnPrint').onclick=()=>window.print();
+
+/* ============================================================================
+   TALLER EVALUATIVO autocalificable
+   ========================================================================== */
+const WEIGHTS={datos:0.20,calculos:0.40,conceptos:0.25,analisis:0.15};
+let TW=[];
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function mc(opts,correctIdx){ const arr=opts.map((t,i)=>({t,ok:i===correctIdx})); shuffle(arr); return arr; }
+function around(v,unit,d=2){ return `${nf(v,d)} ${unit}`; }
+function buildTaller(){
+  const reg=regression(); const rows=S.rows.filter(r=>r.reps.length>0).map(r=>rowStats(r));
+  const ready=rows.length>=3 && reg;
+  $('#twEmpty').hidden=ready; $('#twBody').hidden=!ready; $('#twActions').hidden=!ready;
+  $('#gsUrl').value=S.gsUrl;
+  if(!ready){ ic(); return; }
+  // elegir una altura de referencia (la mayor) para preguntas de cálculo
+  const big=rows.reduce((a,b)=>b.Y>a.Y?b:a);
+  const small=rows.reduce((a,b)=>b.Y<a.Y?b:a);
+  const gE=reg.g;
+  const vImp=Math.sqrt(2*gE*big.Y);
+  const tPred=Math.sqrt(2*big.Y/G);
+  TW=[
+    {c:'datos',q:`Según su tabla, ¿cuál fue el tiempo promedio de caída t̄ para la altura mayor registrada (h̄ = ${nf(big.Y,3)} m)?`,
+      o:mc([around(big.tb,'s',4),around(big.tb*1.12,'s',4),around(big.tb*0.86,'s',4),around(big.tb+0.08,'s',4)],0),
+      fb:`En su fila de h̄ = ${nf(big.Y,3)} m el promedio es t̄ = ${nf(big.tb,4)} s.`},
+    {c:'datos',q:`¿Cuántas alturas distintas registró en total en el laboratorio?`,
+      o:mc([`${rows.length} alturas`,`${rows.length+1} alturas`,`${Math.max(1,rows.length-1)} alturas`,`${rows.length+2} alturas`],0),
+      fb:`Registró ${rows.length} alturas, cada una con sus repeticiones.`},
+    {c:'calculos',q:`Con su pendiente m = ${nf(reg.m,4)} m/s², el valor experimental de la gravedad g = 2m es:`,
+      o:mc([around(reg.g,'m/s²',3),around(reg.m,'m/s²',3),around(reg.g/2*1.0+reg.m,'m/s²',3),around(reg.g*2,'m/s²',3)],0),
+      fb:`g = 2·m = 2·${nf(reg.m,4)} = ${nf(reg.g,3)} m/s².`},
+    {c:'calculos',q:`El error porcentual de su g frente a g_ref = 9,78 m/s² es aproximadamente:`,
+      o:mc([around(reg.err,'%',2),around(reg.err+2.5,'%',2),around(Math.abs(reg.err-1.8),'%',2),around(reg.err+5,'%',2)],0),
+      fb:`%E = |${nf(reg.g,3)} − 9,78|/9,78 × 100 = ${nf(reg.err,2)} %.`},
+    {c:'calculos',q:`La rapidez de impacto para h̄ = ${nf(big.Y,3)} m, usando v = √(2·g·h) con su g = ${nf(gE,2)} m/s², es:`,
+      o:mc([around(vImp,'m/s',2),around(vImp*0.7,'m/s',2),around(vImp*1.35,'m/s',2),around(gE*big.Y,'m/s',2)],0),
+      fb:`v = √(2·${nf(gE,2)}·${nf(big.Y,3)}) = ${nf(vImp,2)} m/s.`},
+    {c:'calculos',q:`¿Qué tiempo de caída predice el modelo ideal (sin aire) para h = ${nf(big.Y,3)} m con g = 9,78 m/s²?`,
+      o:mc([around(tPred,'s',4),around(tPred*1.2,'s',4),around(tPred*0.8,'s',4),around(2*big.Y/G,'s',4)],0),
+      fb:`t = √(2h/g) = √(2·${nf(big.Y,3)}/9,78) = ${nf(tPred,4)} s.`},
+    {c:'conceptos',q:`En caída libre ideal, si se sueltan desde la misma altura una esfera de acero y otra de plástico de distinta masa, ¿qué ocurre con el tiempo de caída?`,
+      o:mc(['Es igual para ambas: no depende de la masa','Cae antes la más pesada','Cae antes la más liviana','Depende del color de la esfera'],0),
+      fb:'En caída libre ideal a = g para todos los cuerpos; el tiempo no depende de la masa.'},
+    {c:'conceptos',q:`¿Por qué el intercepto b de la recta Y = mX + b debería ser cercano a cero en este experimento?`,
+      o:mc(['Porque la esfera parte del reposo (v₀ = 0) y h = ½gt² no tiene término independiente','Porque g vale 9,78','Porque la altura es pequeña','Porque el aire anula el término constante'],0),
+      fb:'Al soltar desde el reposo, h = ½gt²: no hay término constante, así que b ≈ 0 (salvo pequeños sesgos).'},
+    {c:'analisis',q:`Su ajuste tiene R² = ${nf(reg.r2,5)}. ¿Qué indica principalmente este valor?`,
+      o:mc(['Qué tan bien los puntos (t², h) se alinean sobre la recta del modelo','El valor de la gravedad','La masa de la esfera','La altura máxima usada'],0),
+      fb:`R² = ${nf(reg.r2,5)} mide la bondad del ajuste lineal: cuanto más cercano a 1, mejor se cumple h ∝ t².`},
+    {c:'analisis',q:`Si activara el arrastre del aire, especialmente en las alturas mayores, el tiempo de caída medido respecto al modelo ideal tendería a:`,
+      o:mc(['Aumentar ligeramente (el aire frena la esfera)','Disminuir','No cambiar nunca','Hacerse cero'],0),
+      fb:'El arrastre se opone al movimiento: frena la esfera, por lo que el tiempo real es algo mayor que el ideal, más notorio a mayor altura/velocidad.'}
+  ];
+  // abiertas
+  const openQ=`A partir de su resultado g = ${nf(reg.g,3)} ± ${nf(reg.sg,3)} m/s² (error ${nf(reg.err,2)} %), comente dos fuentes de error de su medición y cómo las reduciría.`;
+  let html='';
+  TW.forEach((q,i)=>{
+    html+=`<div class="tw-q" id="twq${i}"><div class="qh"><span class="qn">${i+1}</span><div><span style="opacity:.6;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em">${q.c}</span><br>${esc(q.q)}</div></div><div class="opts">`;
+    q.o.forEach((op,j)=>{ const checked=S.taller.answers[i]===j?'checked':''; const sel=S.taller.answers[i]===j?'sel':'';
+      html+=`<label class="opt ${sel}" data-q="${i}" data-o="${j}"><input type="radio" name="twq${i}" ${checked}><span>${esc(op.t)}</span></label>`; });
+    html+=`</div><div class="fb" id="fb${i}"></div></div>`;
+  });
+  html+=`<div class="tw-q"><div class="qh"><span class="qn">${TW.length+1}</span><div><span style="opacity:.6;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em">análisis · abierta</span><br>${esc(openQ)}</div></div>
+    <textarea id="twOpen" rows="3" placeholder="Escriba su respuesta…">${esc(S.taller.open||'')}</textarea>
+    <div class="fb" id="fbOpen"></div></div>`;
+  $('#twBody').innerHTML=html;
+  // sincronizar campos de identificación
+  ['twName','twCodes','twGroup','twProf'].forEach(id=>{ const k={twName:'name',twCodes:'codes',twGroup:'group',twProf:'prof'}[id]; if(S.taller[k])$('#'+id).value=S.taller[k]; });
+  $$('#twBody .opt').forEach(o=>o.onclick=()=>{ const qi=+o.dataset.q; S.taller.answers[qi]=+o.dataset.o; $$(`[data-q="${qi}"]`).forEach(x=>x.classList.remove('sel')); o.classList.add('sel'); save(); });
+  $('#twOpen')?.addEventListener('input',e=>{S.taller.open=e.target.value;save();});
+  ['twName','twCodes','twGroup','twProf'].forEach(id=>$('#'+id).addEventListener('input',e=>{const k={twName:'name',twCodes:'codes',twGroup:'group',twProf:'prof'}[id];S.taller[k]=e.target.value;save();}));
+  ic();
+}
+function gradeTaller(){
+  if(!TW.length){ toast('Genere el taller primero (registre datos).','warn'); return null; }
+  const comp={datos:[0,0],calculos:[0,0],conceptos:[0,0],analisis:[0,0]};
+  TW.forEach((q,i)=>{ comp[q.c][1]++; const a=S.taller.answers[i]; const ok= a!=null && q.o[a] && q.o[a].ok;
+    if(ok)comp[q.c][0]++;
+    const el=$('#twq'+i), fb=$('#fb'+i);
+    el.classList.remove('ok','bad','part'); el.classList.add(ok?'ok':'bad');
+    $$('.opt',el).forEach((o,j)=>{ o.classList.remove('correct','incorrect'); if(q.o[j].ok)o.classList.add('correct'); else if(S.taller.answers[i]===j)o.classList.add('incorrect'); });
+    fb.className='fb show'; fb.style.background= ok?'color-mix(in srgb,var(--ok-soft) 70%,var(--surface))':'color-mix(in srgb,var(--warn-soft) 70%,var(--surface))';
+    fb.innerHTML=(ok?'✔ Correcto. ':'✗ ')+esc(q.fb);
+  });
+  // abierta: puntúa por longitud/esfuerzo (heurística suave) dentro de análisis
+  const open=(S.taller.open||'').trim(); const openScore= open.length>=120?1: open.length>=50?0.6: open.length>0?0.3:0;
+  comp.analisis[0]+=openScore; comp.analisis[1]+=1;
+  const fbO=$('#fbOpen'); if(fbO){ fbO.className='fb show'; fbO.style.background='color-mix(in srgb,var(--accent-soft) 60%,var(--surface))';
+    fbO.innerHTML= openScore>=1?'✔ Respuesta desarrollada (fuentes de error + mejora).': openScore>0?'◑ Respuesta breve: amplíe nombrando al menos dos fuentes de error y cómo reducirlas.':'Escriba su análisis para obtener el puntaje de esta parte.'; }
+  const frac={}; let total=0;
+  for(const k in comp){ frac[k]= comp[k][1]? comp[k][0]/comp[k][1]:0; total+=WEIGHTS[k]*frac[k]; }
+  const nota=Math.round((1+4*total)*10)/10;
+  const res={nota,porcentaje:Math.round(total*1000)/10,frac,comp};
+  S.taller.graded=res; save();
+  renderGrade(res); safeTypeset($('#twResult'));
+  return res;
+}
+function renderGrade(res){
+  const col=res.nota>=4?CSS('--ok'):res.nota>=3?CSS('--warn'):CSS('--bad');
+  const bd=Object.entries(WEIGHTS).map(([k,w])=>`<div class="stat"><b>${nf(res.frac[k]*100,0)}%</b><small>${k} · peso ${w*100}%</small></div>`).join('');
+  $('#twResult').hidden=false;
+  $('#twResult').innerHTML=`<div class="card"><div class="gauge-wrap">
+    <div style="text-align:center"><div style="font-family:var(--f-display);font-weight:700;font-size:3.4rem;line-height:1;color:${col}">${nf(res.nota,1)}</div><div class="muted" style="font-size:.8rem">nota / 5.0 · ${nf(res.porcentaje,1)}%</div></div>
+    <div class="bd">${bd}</div></div>
+    <p class="muted" style="font-size:.84rem;margin:.6rem 0 0">Nota = 1 + 4·(0,20·Datos + 0,40·Cálculos + 0,25·Conceptos + 0,15·Análisis). ${res.nota>=4?'¡Buen dominio de la práctica!':res.nota>=3?'Aprobado: repase las preguntas marcadas.':'Repase la teoría y sus datos, y vuelva a intentarlo.'}</p></div>`;
+  ic();
+}
+$('#twGrade').onclick=()=>{ gradeTaller(); $('#twResult')?.scrollIntoView({behavior:'smooth',block:'nearest'}); };
+
+/* envío a Apps Script */
+$('#gsTest').onclick=async()=>{
+  const url=$('#gsUrl').value.trim()||S.gsUrl; const box=$('#gsTestRes'); box.innerHTML='<span class="muted">Probando…</span>';
+  try{ const r=await fetch(url,{method:'GET'}); const j=await r.json(); box.innerHTML=`<span class="chip chip-ok"><i data-lucide="check"></i>Conectado · ${esc(j.app||'app')} · ${j.rows??0} envíos</span>`; }
+  catch(e){ box.innerHTML=`<span class="chip chip-warn"><i data-lucide="alert-triangle"></i>No se pudo leer la respuesta (puede seguir funcionando el envío)</span>`; }
+  ic();
+};
+$('#twSend').onclick=async()=>{
+  const name=$('#twName').value.trim();
+  if(!name){ toast('Escriba el/los nombre(s) del grupo antes de enviar.','warn'); $('#twName').focus(); return; }
+  const res=S.taller.graded||gradeTaller(); if(!res)return;
+  const reg=regression();
+  S.taller.intento++;
+  const btn=$('#twSend'); btn.disabled=true; btn.innerHTML='<i data-lucide="loader"></i>Enviando…'; ic();
+  const payload={
+    id:'CL-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),
+    intento:S.taller.intento,
+    estudiantes:name, codigos:$('#twCodes').value.trim(), grupo:$('#twGroup').value.trim(), docente:$('#twProf').value.trim(),
+    curso:'Física I · Caída libre',
+    nota:res.nota, porcentaje:res.porcentaje,
+    s_datos:Math.round(res.frac.datos*100), s_calculos:Math.round(res.frac.calculos*100),
+    s_conceptos:Math.round(res.frac.conceptos*100), s_analisis:Math.round(res.frac.analisis*100),
+    v0:'', g_ajuste:reg?+nf(reg.g,3).replace(',','.'):'', g_guia:G, error_g:reg?+nf(reg.err,2).replace(',','.'):'', r2:reg?+nf(reg.r2,5).replace(',','.'):'',
+    angulos:S.rows.map(r=>nf(rowStats(r).hb,2)).join(' · '), y0:reg?+nf(reg.b,4).replace(',','.'):'',
+    origen:S.manualEdit?'Edición manual':'Simulación RK4',
+    respuestas_abiertas:(S.taller.open||''),
+    detalle:{ rows:S.rows, reg, grade:res }
+  };
+  const url=$('#gsUrl').value.trim()||S.gsUrl; S.gsUrl=url; save();
+  let okMsg='';
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    const j=await r.json();
+    okMsg= j.duplicate? 'Este intento ya estaba registrado.' : 'Enviado y registrado en la hoja del docente (fila '+(j.row||'?')+').';
+    toast('<b>'+okMsg+'</b> Nota: '+nf(res.nota,1),'ok');
+  }catch(e){
+    try{ await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+      toast('Enviado. No se pudo confirmar la respuesta del servidor, pero la solicitud salió correctamente.','ok'); okMsg='Enviado (sin confirmación).';
+    }catch(e2){ toast('No se pudo enviar. Verifique la URL de Apps Script en Opciones de envío.','bad'); okMsg='Error de envío.'; }
+  }
+  btn.disabled=false; btn.innerHTML='<i data-lucide="send"></i>Enviar al docente'; ic();
+};
+
+/* ============================================================================
+   PESTAÑAS
+   ========================================================================== */
+function showTab(id){
+  S.tab=id; save();
+  $$('.tab').forEach(t=>{const on=t.dataset.tab===id;t.setAttribute('aria-selected',on);});
+  $$('.tabpane').forEach(p=>p.hidden = p.id!=='pane-'+id);
+  if(id==='lab'){ setTimeout(()=>{scene.resize(); refreshLabControls();},20); }
+  if(id==='datos'){ renderData(); }
+  if(id==='analisis'){ renderAnalysis(); setTimeout(()=>plot&&plot.o.resize(),20); }
+  if(id==='informe'){ renderReport(); }
+  if(id==='taller'){ buildTaller(); }
+  safeTypeset();
+}
+$$('.tab').forEach(t=>t.onclick=()=>showTab(t.dataset.tab));
+
+/* ============================================================================
+   GUÍA RÁPIDA (spotlight)
+   ========================================================================== */
+const TOUR=[
+  {tab:'teoria',sel:'#pane-teoria .panel-title',txt:'Aquí tiene el marco teórico: h = ½gt² y su linealización Y = mX + b con g = 2m.'},
+  {tab:'lab',sel:'#rngH',txt:'Fije la altura de caída con el deslizador o arrastrando el electroimán en la escena.'},
+  {tab:'lab',sel:'#btnDrop',txt:'Pulse Soltar: el electroimán libera la esfera (ENT 1) y el sensor de impacto detiene el cronómetro (ENT 2).'},
+  {tab:'lab',sel:'#btnRec',txt:'Lea el tiempo y pulse Anotar: se guarda el par (h, t). Repita 3 veces por altura y use varias alturas.'},
+  {tab:'analisis',sel:'.ggp',txt:'El graficador estilo GeoGebra ajusta la recta por mínimos cuadrados y calcula g, R², incertidumbres y error.'},
+  {tab:'taller',sel:'.tw-hero',txt:'El taller se arma con sus propios datos: califíquelo y envíelo al docente.'}
+];
+let tourI=0,tourEls=null;
+function tourShow(){ const step=TOUR[tourI]; showTab(step.tab);
+  setTimeout(()=>{ const el=$(step.sel); if(!el){tourNext();return;} const r=el.getBoundingClientRect();
+    if(!tourEls){ tourEls={spot:document.createElement('div'),tip:document.createElement('div')}; tourEls.spot.className='spot'; tourEls.tip.className='spot-tip'; document.body.append(tourEls.spot,tourEls.tip); }
+    const pad=8; tourEls.spot.style.cssText=`left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+2*pad}px;height:${r.height+2*pad}px`;
+    const below=r.bottom+150<innerHeight;
+    tourEls.tip.style.cssText=`left:${clamp(r.left,8,innerWidth-312)}px;top:${below?r.bottom+14:Math.max(8,r.top-120)}px`;
+    tourEls.tip.innerHTML=`<p style="margin:0 0 .5rem">${step.txt}</p><div style="display:flex;gap:.5rem;justify-content:flex-end"><button class="btn btn-sm" id="tourSkip">Cerrar</button><button class="btn btn-sm btn-primary" id="tourNext">${tourI<TOUR.length-1?'Siguiente':'Listo'}</button></div>`;
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+    $('#tourNext').onclick=tourNext; $('#tourSkip').onclick=tourEnd;
+  },260);
+}
+function tourNext(){ tourI++; if(tourI>=TOUR.length){tourEnd();return;} tourShow(); }
+function tourEnd(){ if(tourEls){tourEls.spot.remove();tourEls.tip.remove();tourEls=null;} tourI=0; }
+$('#btnTour').onclick=()=>{ tourI=0; tourShow(); };
+
+/* ============================================================================
+   INICIO
+   ========================================================================== */
+function init(){
+  load();
+  applyTheme(S.theme);
+  // restaurar campos
+  $('#stName').value=S.student.name; $('#stGroup').value=S.student.group; $('#stProf').value=S.student.prof;
+  $('#stDate').value=S.student.date|| new Date().toLocaleDateString('es-CO');
+  $('#gsUrl').value=S.gsUrl;
+  LAB.fallen=0; LAB.line=LAB.h; LAB.recorded=true;
+  refreshLabControls();
+  showTab(S.tab||'teoria');
+  setTimeout(()=>{ renderAllCanvas(); ic(); safeTypeset(); },60);
+  // asegurar render tras cargar fuentes
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>setTimeout(renderAllCanvas,50));
+}
+window.addEventListener('load',()=>setTimeout(init,30));
+ic();
+</script>
+</body>
+</html>
